@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">RecipeBox</string>
+    
+    <string-array name="food_filter">
+        <item>All Foods</item>
+        <item>Chicken</item>
+        <item>Beef</item>
+        <item>Pork</item>
+        <item>Lamb</item>
+    </string-array>
+
+    <string-array name="favorite_filter">
+        <item>All Recipes</item>
+        <item>Favorites</item>
+    </string-array>
+</resources>

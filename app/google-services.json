@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1024512054275",
+    "firebase_url": "https://recipebox-c2ae2.firebaseio.com",
+    "project_id": "recipebox-c2ae2",
+    "storage_bucket": "recipebox-c2ae2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024512054275:android:8ac0933e7dd19841",
+        "android_client_info": {
+          "package_name": "com.fatmogul.recipebox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024512054275-8arlrhukr07ptr6tckcvov82re1t93go.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fatmogul.recipebox",
+            "certificate_hash": "0f9461aa5a8af42d38d795c916eaca281526b5fa"
+          }
+        },
+        {
+          "client_id": "1024512054275-i56qa1haf542r9099gfvv84qoltmumpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_SAcCrh2xxs9qxgrZL3e-wQ_2BcgZa98"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024512054275-i56qa1haf542r9099gfvv84qoltmumpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
