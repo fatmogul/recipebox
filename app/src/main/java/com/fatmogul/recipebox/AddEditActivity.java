@@ -74,7 +74,7 @@ public class AddEditActivity extends AppCompatActivity {
                 if(mPhotoDownloadUri != null){
                     photoUri = mPhotoDownloadUri.toString();
                 }
-                Recipe recipe = new Recipe("Detail Test", "detail test", "",1,1,null,null,photoUri);
+                Recipe recipe = new Recipe("Detail Test", "detail test", "",1,1,null,null,photoUri, true);
                 mRecipeDatabaseReference.push().setValue(recipe);
 
             }

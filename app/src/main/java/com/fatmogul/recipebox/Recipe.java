@@ -12,11 +12,12 @@ public class Recipe {
     private List ingredients;
     private List directions;
     private String photoUrl;
+    private boolean favorite;
 
     public Recipe() {
     }
 
-    public Recipe(String title, String titleLower, String name, long prepTime, long cookTime, List ingredients, List directions, String photoUrl){
+    public Recipe(String title, String titleLower, String name, long prepTime, long cookTime, List ingredients, List directions, String photoUrl, boolean favorite){
         this.title = title;
         this.titleLower = titleLower.toLowerCase();
         this.name = name;
@@ -25,6 +26,7 @@ public class Recipe {
         this.ingredients = ingredients;
         this.directions = directions;
         this.photoUrl = photoUrl;
+        this.favorite = favorite;
     }
 
     public String getTitle(){
@@ -88,5 +90,13 @@ public class Recipe {
 
     public void setTitleLower(String titleLower) {
         this.titleLower = titleLower.toLowerCase();
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

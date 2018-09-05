@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -14,9 +13,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SearchEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,7 +29,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,20 +53,56 @@ public class MainActivity extends AppCompatActivity {
     private String mSearchTerm;
     private boolean mSearchQueryChanged = false;
 
+    private String mFilterSearch;
+    private boolean mFavorites;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Spinner filterSpinner = findViewById(R.id.filter);
-        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this,R.array.food_filter,android.R.layout.simple_spinner_item);
+        final Spinner filterSpinner = findViewById(R.id.filter);
+        final ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this, R.array.food_filter, android.R.layout.simple_spinner_item);
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFilterSearch = filterSpinner.getItemAtPosition(position).toString();
 
-        Spinner favoritesSpinner = findViewById(R.id.favorites);
-        ArrayAdapter<CharSequence> favoritesAdapter = ArrayAdapter.createFromResource(this,R.array.favorite_filter,android.R.layout.simple_spinner_item);
+                mAdapter.clear();
+                mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+                detachDatabaseReadListener();
+                attachDatabaseReadListener();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        final Spinner favoritesSpinner = findViewById(R.id.favorites);
+        ArrayAdapter<CharSequence> favoritesAdapter = ArrayAdapter.createFromResource(this, R.array.favorite_filter, android.R.layout.simple_spinner_item);
         favoritesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         favoritesSpinner.setAdapter(favoritesAdapter);
+        favoritesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(favoritesSpinner.getItemAtPosition(position).toString().equals("Favorites")){
+                mFavorites = true;}
+                else{
+                    mFavorites = false;}
+                mAdapter.clear();
+                mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+                detachDatabaseReadListener();
+                attachDatabaseReadListener();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         mRecipeListView = findViewById(R.id.recipeListView);
@@ -105,45 +140,59 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-           }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 return true;
             default:
-                    return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
 
         }
     }
 
-
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main,menu);
+        inflater.inflate(R.menu.main, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search_button).getActionView();
+        final SearchView searchView = (SearchView) menu.findItem(R.id.search_button).getActionView();
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
         searchView.setQueryHint("Find Recipe");
+
+        final ImageView searchCloseButton = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                searchView.setQuery("", false);
+                searchView.onActionViewCollapsed();
+                menu.findItem(R.id.search_button).collapseActionView();
+                mSearchQueryChanged = false;
+                mSearchTerm = null;
+                mAdapter.clear();
+                mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+                detachDatabaseReadListener();
+                attachDatabaseReadListener();
+
+            }
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String queryText) {
-                if(mSearchQueryChanged == true){
+                if (mSearchQueryChanged == true) {
                     mSearchQueryChanged = false;
-                    Intent intent = new Intent(MainActivity.this, SearchableActivity.class);
-                    intent.putExtra("query",mSearchTerm);
-                    intent.putExtra("userId",mUserId);
-                    overridePendingTransition(0, 0);
-
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
+                    mAdapter.clear();
+                    mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+                    detachDatabaseReadListener();
+                    attachDatabaseReadListener();
+                    searchView.clearFocus();
 
                 }
                 return true;
@@ -163,19 +212,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_SIGN_IN){
-            if(resultCode == RESULT_OK){
-                Toast.makeText(this,"Signed in",Toast.LENGTH_SHORT).show();
-            }
-            else if(resultCode == RESULT_CANCELED){
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -198,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addRecipe(View view) {
         Intent intent = new Intent(MainActivity.this, AddEditActivity.class);
-        intent.putExtra("userId",mUserId);
+        intent.putExtra("userId", mUserId);
         startActivity(intent);
     }
 
@@ -215,13 +261,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attachDatabaseReadListener() {
-        if(mChildEventListener == null) {
+        if (mChildEventListener == null) {
 
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    boolean meetSearchCriteria = true;
                     Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
-                    mAdapter.add(thisRecipe);
+
+                    if (mSearchTerm != null && !thisRecipe.getTitleLower().contains(mSearchTerm.toLowerCase())) {
+                            meetSearchCriteria = false;
+                        }
+                    if (mFilterSearch != null && !mFilterSearch.equals("All Foods") && !thisRecipe.getTitleLower().contains(mFilterSearch.toLowerCase())) {
+                            meetSearchCriteria = false;
+                    }
+                    if(mFavorites == true && !thisRecipe.isFavorite()){
+                        meetSearchCriteria = false;
+                    }
+                    if (meetSearchCriteria) {
+
+                        mAdapter.add(thisRecipe);
+                    }
                 }
 
                 @Override
@@ -243,10 +303,11 @@ public class MainActivity extends AppCompatActivity {
             mRecipeDatabaseReference.addChildEventListener(mChildEventListener);
         }
     }
-private void detachDatabaseReadListener(){
-        if(mChildEventListener != null) {
+
+    private void detachDatabaseReadListener() {
+        if (mChildEventListener != null) {
             mRecipeDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
-        }
+    }
 }
