@@ -268,7 +268,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     boolean meetSearchCriteria = true;
                     Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
-
+                    thisRecipe.setRecipeId(dataSnapshot.getKey());
+                    thisRecipe.setUserId(mUserId);
+                    mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("recipeId").setValue(dataSnapshot.getKey());
+                    mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("userId").setValue(mUserId);
                     if (mSearchTerm != null && !thisRecipe.getTitleLower().contains(mSearchTerm.toLowerCase())) {
                             meetSearchCriteria = false;
                         }

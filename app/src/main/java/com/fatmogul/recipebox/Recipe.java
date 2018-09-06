@@ -6,7 +6,6 @@ public class Recipe {
 
     private String title;
     private String titleLower;
-    private String name;
     private long prepTime;
     private long cookTime;
     private long servings;
@@ -14,14 +13,15 @@ public class Recipe {
     private List directions;
     private String photoUrl;
     private boolean favorite;
+    private String recipeId;
+    private String userId;
 
     public Recipe() {
     }
 
-    public Recipe(String title, String titleLower, String name, long prepTime, long cookTime, long servings, List ingredients, List directions, String photoUrl, boolean favorite){
+    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, List ingredients, List directions, String photoUrl, boolean favorite, String recipeId, String userId){
         this.title = title;
         this.titleLower = titleLower.toLowerCase();
-        this.name = name;
         this.prepTime = prepTime;
         this.cookTime = cookTime;
         this.servings = servings;
@@ -29,6 +29,8 @@ public class Recipe {
         this.directions = directions;
         this.photoUrl = photoUrl;
         this.favorite = favorite;
+        this.userId = userId;
+        this.recipeId = recipeId;
     }
 
     public String getTitle(){
@@ -78,14 +80,6 @@ public class Recipe {
         this.photoUrl = photoUrl;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getTitleLower() {
         return titleLower;
     }
@@ -108,5 +102,17 @@ public class Recipe {
 
     public void setServings(long servings) {
         this.servings = servings;
+    }
+
+    public String getRecipeId(){return recipeId;}
+
+    public void setRecipeId(String recipeId){this.recipeId = recipeId;}
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
