@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -113,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         List<Recipe> recipes = new ArrayList<>();
         mAdapter = new RecipeAdapter(this, R.layout.recipe, recipes);
         mRecipeListView.setAdapter(mAdapter);
-
 
         final List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),

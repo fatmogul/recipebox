@@ -15,10 +15,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            </activity>
-        <activity android:name=".AddEditActivity"
-            android:parentActivityName=".MainActivity"></activity>
+        </activity>
+        <activity
+            android:name=".AddEditActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".DetailActivity"></activity>
     </application>
 
 </manifest>

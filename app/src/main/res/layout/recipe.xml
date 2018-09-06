@@ -1,23 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-<ImageView
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:id="@+id/recipeImageView"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/recipeNameView"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/prepTimeView"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cookTimeView"/>
+    android:layout_height="wrap_content"
+    android:paddingBottom="3dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:paddingTop="3dp">
 
-</LinearLayout>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/recipe_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back"
+        android:elevation="6dp">
+
+        <FrameLayout
+            android:id="@+id/recipeImageFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/recipe_frame"
+            app:layout_constraintRight_toRightOf="@id/recipe_frame"
+            app:layout_constraintTop_toTopOf="@id/recipe_frame"
+
+            >
+
+            <ImageView
+
+                android:id="@+id/recipeImageView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/favorite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:paddingEnd="20dp"
+            android:paddingRight="20dp"
+            android:src="@drawable/ic_favorite_border_grey_24dp"
+            app:layout_constraintLeft_toLeftOf="@id/recipe_frame"
+            app:layout_constraintTop_toBottomOf="@id/recipeImageFrame" />
+
+
+        <TextView
+            android:id="@+id/recipeNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/favorite_icon"
+            app:layout_constraintLeft_toRightOf="@+id/favorite_icon"
+            app:layout_constraintRight_toLeftOf="@id/share_icon"
+            app:layout_constraintTop_toTopOf="@id/favorite_icon" />
+
+        <ImageView
+            android:id="@+id/share_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:src="@drawable/ic_share_black_24dp"
+            app:layout_constraintRight_toRightOf="@id/recipe_frame"
+            app:layout_constraintTop_toBottomOf="@id/recipeImageFrame" />
+
+        <TextView
+            android:id="@+id/prep_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prep Time:"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:paddingLeft="16dp"
+            app:layout_constraintLeft_toLeftOf="@id/recipeImageFrame"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_icon" />
+
+        <TextView
+            android:id="@+id/prepTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+
+            android:textSize="12sp"
+            app:layout_constraintLeft_toRightOf="@id/prep_time_label"
+            app:layout_constraintTop_toTopOf="@id/prep_time_label" />
+
+        <TextView
+            android:id="@+id/cook_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cook Time:"
+
+            android:textSize="12sp"
+            android:paddingLeft="16dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/recipeImageFrame"
+            app:layout_constraintTop_toBottomOf="@id/prep_time_label" />
+
+        <TextView
+            android:id="@+id/cookTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+
+            android:textSize="12sp"
+            android:paddingBottom="8dp"
+            app:layout_constraintLeft_toRightOf="@id/prep_time_label"
+            app:layout_constraintTop_toTopOf="@id/cook_time_label" />
+
+        <TextView
+            android:id="@+id/servings_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serves:"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:paddingRight="16dp"
+            app:layout_constraintRight_toRightOf="@id/recipeImageFrame"
+            app:layout_constraintTop_toTopOf="@id/prep_time_label" />
+
+        <TextView
+            android:id="@+id/servingsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="16dp"
+
+            android:textSize="12sp"
+            android:paddingBottom="8dp"
+            app:layout_constraintRight_toRightOf="@id/servings_label"
+            app:layout_constraintLeft_toLeftOf="@id/servings_label"
+            app:layout_constraintTop_toBottomOf="@id/servings_label" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.fatmogul.recipebox;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -29,6 +30,7 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
         TextView titleTextView = convertView.findViewById(R.id.recipeNameView);
         TextView prepTimeTextView = convertView.findViewById(R.id.prepTimeView);
         TextView cookTimeTextView = convertView.findViewById(R.id.cookTimeView);
+        TextView servingsView = convertView.findViewById(R.id.servingsView);
 
         Recipe recipe = getItem(position);
 
@@ -42,6 +44,7 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
         titleTextView.setText(recipe.getTitle());
         prepTimeTextView.setText(Long.toString(recipe.getPrepTime()));
         cookTimeTextView.setText(Long.toString(recipe.getCookTime()));
+        servingsView.setText(Long.toString(recipe.getServings()));
 
         return convertView;
     }

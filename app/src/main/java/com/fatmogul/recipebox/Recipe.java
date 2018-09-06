@@ -9,6 +9,7 @@ public class Recipe {
     private String name;
     private long prepTime;
     private long cookTime;
+    private long servings;
     private List ingredients;
     private List directions;
     private String photoUrl;
@@ -17,12 +18,13 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(String title, String titleLower, String name, long prepTime, long cookTime, List ingredients, List directions, String photoUrl, boolean favorite){
+    public Recipe(String title, String titleLower, String name, long prepTime, long cookTime, long servings, List ingredients, List directions, String photoUrl, boolean favorite){
         this.title = title;
         this.titleLower = titleLower.toLowerCase();
         this.name = name;
         this.prepTime = prepTime;
         this.cookTime = cookTime;
+        this.servings = servings;
         this.ingredients = ingredients;
         this.directions = directions;
         this.photoUrl = photoUrl;
@@ -98,5 +100,13 @@ public class Recipe {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public long getServings() {
+        return servings;
+    }
+
+    public void setServings(long servings) {
+        this.servings = servings;
     }
 }
