@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,10 +26,6 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
         super(context, resource, objects);
     }
 
-    @Override
-    public void add(@Nullable Recipe object) {
-        super.add(object);
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -92,19 +89,23 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View v) {
                 boolean isFavorite;
+                String toastText;
                 if (recipe.isFavorite()) {
                     favoriteIcon.setImageResource(R.drawable.ic_favorite_border_grey_24dp);
                     isFavorite = false;
+                    toastText = recipe.getTitle() + " unfavorited.";
 
                 } else {
                     favoriteIcon.setImageResource(R.drawable.ic_favorite_red_24dp);
                     isFavorite = true;
+                    toastText = recipe.getTitle() + " favorited.";
                 }
 
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 DatabaseReference rf = db.getReference().child("users/" + recipe.getUserId() + "/recipes");
                 rf.child(recipe.getRecipeId()).child("favorite").setValue(isFavorite);
                 recipe.setFavorite(isFavorite);
+                Toast.makeText(getContext(),toastText,Toast.LENGTH_SHORT).show();
             }});
         return convertView;
     }

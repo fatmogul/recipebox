@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -45,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ChildEventListener mChildEventListener;
     private ListView mRecipeListView;
     private RecipeAdapter mAdapter;
+    private ArrayList<String> mKeys;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mKeys = new ArrayList<>();
 
         final Spinner filterSpinner = findViewById(R.id.filter);
         final ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this, R.array.food_filter, android.R.layout.simple_spinner_item);
@@ -71,16 +72,14 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFilterSearch = filterSpinner.getItemAtPosition(position).toString();
 
-                mAdapter.clear();
+                //mAdapter.clear();
                 mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
         final Spinner favoritesSpinner = findViewById(R.id.favorites);
         ArrayAdapter<CharSequence> favoritesAdapter = ArrayAdapter.createFromResource(this, R.array.favorite_filter, android.R.layout.simple_spinner_item);
@@ -89,22 +88,20 @@ public class MainActivity extends AppCompatActivity {
         favoritesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(favoritesSpinner.getItemAtPosition(position).toString().equals("Favorites")){
-                mFavorites = true;}
-                else{
-                    mFavorites = false;}
-                mAdapter.clear();
+                if (favoritesSpinner.getItemAtPosition(position).toString().equals("Favorites")) {
+                    mFavorites = true;
+                } else {
+                    mFavorites = false;
+                }
+                //mAdapter.clear();
                 mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
-
 
         mRecipeListView = findViewById(R.id.recipeListView);
 
@@ -113,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Recipe> recipes = new ArrayList<>();
         mAdapter = new RecipeAdapter(this, R.layout.recipe, recipes);
+
         mRecipeListView.setAdapter(mAdapter);
 
         final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -136,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
                                     .build(),
                             RC_SIGN_IN);
                 }
-
-
             }
         };
     }
@@ -245,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
     public void addRecipe(View view) {
         Intent intent = new Intent(MainActivity.this, AddEditActivity.class);
         intent.putExtra("userId", mUserId);
+        intent.putExtra("taskId", "new");
         startActivity(intent);
     }
 
@@ -261,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attachDatabaseReadListener() {
+
         if (mChildEventListener == null) {
 
             mChildEventListener = new ChildEventListener() {
@@ -273,26 +271,36 @@ public class MainActivity extends AppCompatActivity {
                     mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("recipeId").setValue(dataSnapshot.getKey());
                     mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("userId").setValue(mUserId);
                     if (mSearchTerm != null && !thisRecipe.getTitleLower().contains(mSearchTerm.toLowerCase())) {
-                            meetSearchCriteria = false;
-                        }
-                    if (mFilterSearch != null && !mFilterSearch.equals("All Foods") && !thisRecipe.getTitleLower().contains(mFilterSearch.toLowerCase())) {
-                            meetSearchCriteria = false;
+                        meetSearchCriteria = false;
                     }
-                    if(mFavorites == true && !thisRecipe.isFavorite()){
+                    if (mFilterSearch != null && !mFilterSearch.equals("All Foods") && !thisRecipe.getTitleLower().contains(mFilterSearch.toLowerCase())) {
+                        meetSearchCriteria = false;
+                    }
+                    if (mFavorites == true && !thisRecipe.isFavorite()) {
                         meetSearchCriteria = false;
                     }
                     if (meetSearchCriteria) {
-
+                        mKeys.add(thisRecipe.getRecipeId());
                         mAdapter.add(thisRecipe);
                     }
                 }
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    int index = mKeys.indexOf(dataSnapshot.getKey());
+                    mAdapter.remove(mAdapter.getItem(index));
+                    mAdapter.insert(dataSnapshot.getValue(Recipe.class), index);
+                    mAdapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    int index = mKeys.indexOf(dataSnapshot.getKey());
+                    mAdapter.remove(mAdapter.getItem(index));
+                    mAdapter.notifyDataSetChanged();
+                    mKeys.remove(dataSnapshot.getKey());
+
                 }
 
                 @Override
@@ -309,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void detachDatabaseReadListener() {
         if (mChildEventListener != null) {
+            mKeys.clear();
             mRecipeDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }

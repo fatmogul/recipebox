@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -31,9 +32,11 @@ public class AddEditActivity extends AppCompatActivity {
 
     private String mUserId;
     private Uri mPhotoDownloadUri;
+    private String mTaskId;
 
     private Button mPhotoPickerButton;
     private Button mSaveButton;
+    private Button mClearButton;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
@@ -47,6 +50,7 @@ public class AddEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_edit);
 
         mUserId = getIntent().getStringExtra("userId");
+        mTaskId = getIntent().getStringExtra("taskId");
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
@@ -54,8 +58,15 @@ public class AddEditActivity extends AppCompatActivity {
         mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
         mRecipePhotoStorageReference = mFirebaseStorage.getReference().child("users/" + mUserId + "/photos");
 
+        if(mTaskId.equals("new")){
+            setTitle("Add New Recipe");
+        }
+        else{
+            //TODO: get recipe name from database for title
+            }
         mPhotoPickerButton = findViewById(R.id.photo_picker_button);
         mSaveButton = findViewById(R.id.save_recipe_button);
+        mClearButton = findViewById(R.id.clear_button);
 
         mPhotoPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +90,17 @@ public class AddEditActivity extends AppCompatActivity {
 
             }
         });
+
+        mClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPhotoDownloadUri = null;
+                setPicture();
+            }
+        });
+
+
+        setPicture();
     }
     @Override
     public void onBackPressed() {
@@ -121,9 +143,7 @@ public class AddEditActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
                             mPhotoDownloadUri = task.getResult();
-                            ImageView iv = findViewById(R.id.uploaded_photo_iv);
-                            Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().into(iv);
-
+                            setPicture();
 
                         } else {
                             Toast.makeText(getApplicationContext(),"Photo Upload Failed",Toast.LENGTH_SHORT).show();
@@ -136,4 +156,16 @@ public class AddEditActivity extends AppCompatActivity {
 
 
         }}
+        public void setPicture(){
+            ImageView iv = findViewById(R.id.uploaded_photo_iv);
+            Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(iv);
+            if(mPhotoDownloadUri != null){
+                mPhotoPickerButton.setText("Change Photo");
+                mClearButton.setVisibility(View.VISIBLE);
+            }else{
+                mPhotoPickerButton.setText("Add Photo");
+                mClearButton.setVisibility(View.GONE);
+            }
+
+        }
 }

@@ -6,7 +6,6 @@
         <item>Chicken</item>
         <item>Beef</item>
         <item>Pork</item>
-        <item>Detail</item>
     </string-array>
 
     <string-array name="favorite_filter">
