@@ -4,13 +4,11 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,25 +37,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static final int RC_SIGN_IN = 1;
-
+    ArrayList<Recipe> mRecipes;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRecipeDatabaseReference;
     private ChildEventListener mChildEventListener;
     private ListView mRecipeListView;
     private RecipeAdapter mAdapter;
     private ArrayList<String> mKeys;
-
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
     private String mUserId;
-
     private String mSearchTerm;
     private boolean mSearchQueryChanged = false;
-
     private String mFilterSearch;
     private boolean mFavorites;
-    ArrayList<Recipe> mRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         final ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this, R.array.food_filter, android.R.layout.simple_spinner_item);
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
-        filterSpinner.setSelection(0,false);
+        filterSpinner.setSelection(0, false);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -79,9 +72,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mUserId = savedInstanceState.getString("userId");
             mRecipes = savedInstanceState.getParcelableArrayList("recipes");
         }
@@ -89,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> favoritesAdapter = ArrayAdapter.createFromResource(this, R.array.favorite_filter, android.R.layout.simple_spinner_item);
         favoritesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         favoritesSpinner.setAdapter(favoritesAdapter);
-        favoritesSpinner.setSelection(0,false);
+        favoritesSpinner.setSelection(0, false);
         favoritesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -104,15 +98,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         mRecipeListView = findViewById(R.id.recipeListView);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = mFirebaseAuth.getInstance();
-if(mRecipes == null){
-        mRecipes = new ArrayList<>();}
+        if (mRecipes == null) {
+            mRecipes = new ArrayList<>();
+        }
         mAdapter = new RecipeAdapter(this, R.layout.recipe, mRecipes);
         mRecipeListView.setAdapter(mAdapter);
 
@@ -124,22 +120,23 @@ if(mRecipes == null){
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(mUserId == null){
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    onSignedInInitialize(user.getUid());
+                if (mUserId == null) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        onSignedInInitialize(user.getUid());
 
-                } else {
-                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN);
+                    } else {
+                        onSignedOutCleanup();
+                        startActivityForResult(
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setIsSmartLockEnabled(false)
+                                        .setAvailableProviders(providers)
+                                        .build(),
+                                RC_SIGN_IN);
+                    }
                 }
-            }}
+            }
         };
     }
 
@@ -157,8 +154,8 @@ if(mRecipes == null){
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("userId",mUserId);
-        outState.putParcelableArrayList("recipes",mRecipes);
+        outState.putString("userId", mUserId);
+        outState.putParcelableArrayList("recipes", mRecipes);
         super.onSaveInstanceState(outState);
     }
 
@@ -291,7 +288,6 @@ if(mRecipes == null){
                     if (meetSearchCriteria) {
                         mKeys.add(thisRecipe.getRecipeId());
                         mAdapter.add(thisRecipe);
-                        mRecipes.add(thisRecipe);
                     }
                 }
 
