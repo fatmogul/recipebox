@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">RecipeBox</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="clear_photo">Clear Photo</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="recipe_name">Recipe Name:</string>
+    <string name="prep_time">Prep Time:</string>
+    <string name="cook_time">Cook Time:</string>
+    <string name="serves">Serves:</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="directions">Directions</string>
 
     <string-array name="food_filter">
         <item>All Foods</item>
