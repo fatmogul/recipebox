@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -18,11 +19,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeAdapter extends ArrayAdapter<Recipe> {
     
-    public RecipeAdapter(Context context, int resource, List<Recipe> objects) {
+    public RecipeAdapter(Context context, int resource, ArrayList<Recipe> objects) {
         super(context, resource, objects);
     }
 

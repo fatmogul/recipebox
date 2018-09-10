@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -56,24 +57,23 @@ public class MainActivity extends AppCompatActivity {
 
     private String mFilterSearch;
     private boolean mFavorites;
+    ArrayList<Recipe> mRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mKeys = new ArrayList<>();
-
         final Spinner filterSpinner = findViewById(R.id.filter);
         final ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this, R.array.food_filter, android.R.layout.simple_spinner_item);
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
+        filterSpinner.setSelection(0,false);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFilterSearch = filterSpinner.getItemAtPosition(position).toString();
-
-                //mAdapter.clear();
-                mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+                mAdapter.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
             }
@@ -81,10 +81,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+        if(savedInstanceState != null){
+            mUserId = savedInstanceState.getString("userId");
+            mRecipes = savedInstanceState.getParcelableArrayList("recipes");
+        }
         final Spinner favoritesSpinner = findViewById(R.id.favorites);
         ArrayAdapter<CharSequence> favoritesAdapter = ArrayAdapter.createFromResource(this, R.array.favorite_filter, android.R.layout.simple_spinner_item);
         favoritesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         favoritesSpinner.setAdapter(favoritesAdapter);
+        favoritesSpinner.setSelection(0,false);
         favoritesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -93,8 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mFavorites = false;
                 }
-                //mAdapter.clear();
-                mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+                mAdapter.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
             }
@@ -107,11 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = mFirebaseAuth.getInstance();
-
-        List<Recipe> recipes = new ArrayList<>();
-        mAdapter = new RecipeAdapter(this, R.layout.recipe, recipes);
-
+if(mRecipes == null){
+        mRecipes = new ArrayList<>();}
+        mAdapter = new RecipeAdapter(this, R.layout.recipe, mRecipes);
         mRecipeListView.setAdapter(mAdapter);
+
 
         final List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -120,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(mUserId == null){
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     onSignedInInitialize(user.getUid());
@@ -134,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                     .build(),
                             RC_SIGN_IN);
                 }
-            }
+            }}
         };
     }
 
@@ -148,6 +153,13 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("userId",mUserId);
+        outState.putParcelableArrayList("recipes",mRecipes);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -173,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
                 mSearchQueryChanged = false;
                 mSearchTerm = null;
                 mAdapter.clear();
-                mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
 
@@ -185,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
                 if (mSearchQueryChanged == true) {
                     mSearchQueryChanged = false;
                     mAdapter.clear();
-                    mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
                     detachDatabaseReadListener();
                     attachDatabaseReadListener();
                     searchView.clearFocus();
@@ -247,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSignedInInitialize(String userId) {
         mUserId = userId;
-        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
         attachDatabaseReadListener();
     }
 
@@ -260,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
     private void attachDatabaseReadListener() {
 
         if (mChildEventListener == null) {
-
+            mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -282,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     if (meetSearchCriteria) {
                         mKeys.add(thisRecipe.getRecipeId());
                         mAdapter.add(thisRecipe);
+                        mRecipes.add(thisRecipe);
                     }
                 }
 

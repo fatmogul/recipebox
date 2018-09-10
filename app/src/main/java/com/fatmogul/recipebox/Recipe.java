@@ -1,8 +1,11 @@
 package com.fatmogul.recipebox;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Parcelable{
 
     private String title;
     private String titleLower;
@@ -32,6 +35,30 @@ public class Recipe {
         this.userId = userId;
         this.recipeId = recipeId;
     }
+
+    protected Recipe(Parcel in) {
+        title = in.readString();
+        titleLower = in.readString();
+        prepTime = in.readLong();
+        cookTime = in.readLong();
+        servings = in.readLong();
+        photoUrl = in.readString();
+        favorite = in.readByte() != 0;
+        recipeId = in.readString();
+        userId = in.readString();
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 
     public String getTitle(){
         return title;
@@ -114,5 +141,23 @@ public class Recipe {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(titleLower);
+        dest.writeLong(prepTime);
+        dest.writeLong(cookTime);
+        dest.writeLong(servings);
+        dest.writeString(photoUrl);
+        dest.writeByte((byte) (favorite ? 1 : 0));
+        dest.writeString(recipeId);
+        dest.writeString(userId);
     }
 }
