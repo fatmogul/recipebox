@@ -3,6 +3,7 @@ package com.fatmogul.recipebox;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recipe implements Parcelable{
@@ -12,7 +13,7 @@ public class Recipe implements Parcelable{
     private long prepTime;
     private long cookTime;
     private long servings;
-    private List ingredients;
+    private ArrayList<Ingredient> ingredients;
     private List directions;
     private String photoUrl;
     private boolean favorite;
@@ -22,7 +23,7 @@ public class Recipe implements Parcelable{
     public Recipe() {
     }
 
-    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, List ingredients, List directions, String photoUrl, boolean favorite, String recipeId, String userId){
+    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, ArrayList<Ingredient> ingredients, List directions, String photoUrl, boolean favorite, String recipeId, String userId){
         this.title = title;
         this.titleLower = titleLower.toLowerCase();
         this.prepTime = prepTime;
@@ -87,7 +88,7 @@ public class Recipe implements Parcelable{
         return ingredients;
     }
 
-    public void setIngredients(List ingredients) {
+    public void setIngredients(ArrayList<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 

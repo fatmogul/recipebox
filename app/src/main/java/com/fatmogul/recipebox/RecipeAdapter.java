@@ -51,8 +51,8 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
             recipeImageView.setVisibility(View.GONE);
         }
         titleTextView.setText(recipe.getTitle());
-        prepTimeTextView.setText(Long.toString(recipe.getPrepTime()));
-        cookTimeTextView.setText(Long.toString(recipe.getCookTime()));
+        prepTimeTextView.setText(Long.toString(recipe.getPrepTime()) + " minutes");
+        cookTimeTextView.setText(Long.toString(recipe.getCookTime()) + " minutes");
         servingsView.setText(Long.toString(recipe.getServings()));
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

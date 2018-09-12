@@ -5,12 +5,18 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
-    <string name="recipe_name">Recipe Name:</string>
-    <string name="prep_time">Prep Time:</string>
-    <string name="cook_time">Cook Time:</string>
-    <string name="serves">Serves:</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="prep_time">Prep Time</string>
+    <string name="cook_time">Cook Time</string>
+    <string name="serves">Serves</string>
     <string name="ingredients">Ingredients</string>
     <string name="directions">Directions</string>
+    <string name="in_minutes">in minutes</string>
+    <string name="add_to_favorites">Add to Favorites?</string>
+    <string name="add_edit_save_error_toast_message">The following fields are required:</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="upload_your_photo_here">Upload your Photo here</string>
+    <string name="no_ingredients">None</string>
 
     <string-array name="food_filter">
         <item>All Foods</item>
