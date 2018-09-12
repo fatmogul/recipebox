@@ -14,7 +14,7 @@ public class Recipe implements Parcelable{
     private long cookTime;
     private long servings;
     private ArrayList<Ingredient> ingredients;
-    private List directions;
+    private ArrayList<Direction> directions;
     private String photoUrl;
     private boolean favorite;
     private String recipeId;
@@ -23,7 +23,7 @@ public class Recipe implements Parcelable{
     public Recipe() {
     }
 
-    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, ArrayList<Ingredient> ingredients, List directions, String photoUrl, boolean favorite, String recipeId, String userId){
+    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, ArrayList<Ingredient> ingredients, ArrayList<Direction> directions, String photoUrl, boolean favorite, String recipeId, String userId){
         this.title = title;
         this.titleLower = titleLower.toLowerCase();
         this.prepTime = prepTime;
@@ -92,11 +92,11 @@ public class Recipe implements Parcelable{
         this.ingredients = ingredients;
     }
 
-    public List getDirections() {
+    public ArrayList<Direction> getDirections() {
         return directions;
     }
 
-    public void setDirections(List directions) {
+    public void setDirections(ArrayList<Direction> directions) {
         this.directions = directions;
     }
 

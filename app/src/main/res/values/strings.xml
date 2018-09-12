@@ -16,7 +16,7 @@
     <string name="add_edit_save_error_toast_message">The following fields are required:</string>
     <string name="change_photo">Change Photo</string>
     <string name="upload_your_photo_here">Upload your Photo here</string>
-    <string name="no_ingredients">None</string>
+    <string name="none_loaded">None</string>
 
     <string-array name="food_filter">
         <item>All Foods</item>

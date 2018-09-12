@@ -54,18 +54,18 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
                 AddEditActivity.removeIngredient(position);
             }
         });
-        if (ingredientEditText.getText().toString().equals(getContext().getResources().getString(R.string.no_ingredients))) {
+        if (ingredientEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
             removeButton.setVisibility(View.GONE);
             quantityEditText.setVisibility(View.GONE);
             measurementEditText.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
-            ingredientEditText.setGravity(View.TEXT_ALIGNMENT_CENTER);
+            ingredientEditText.setVisibility(View.VISIBLE);
         } else {
             removeButton.setVisibility(View.VISIBLE);
             quantityEditText.setVisibility(View.VISIBLE);
             measurementEditText.setVisibility(View.VISIBLE);
             editButton.setVisibility(View.VISIBLE);
-            ingredientEditText.setGravity(View.TEXT_ALIGNMENT_TEXT_START);
+            ingredientEditText.setVisibility(View.VISIBLE);
         }
 
 

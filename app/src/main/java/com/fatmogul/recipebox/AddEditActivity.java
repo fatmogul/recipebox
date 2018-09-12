@@ -2,10 +2,8 @@ package com.fatmogul.recipebox;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,10 +11,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -42,8 +40,10 @@ import java.util.List;
 public class AddEditActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
-    static ArrayList mIngredients;
-    private static IngredientAdapter mAdapter;
+    private static ArrayList mIngredients;
+    private static ArrayList mDirections;
+    private static IngredientAdapter mIngredientAdapter;
+    private static DirectionAdapter mDirectionAdapter;
     private String mUserId;
     private Uri mPhotoDownloadUri;
     private String mTaskId;
@@ -58,8 +58,9 @@ public class AddEditActivity extends AppCompatActivity {
     private EditText mServesEditText;
     private CheckBox mFavoritesCheckBox;
     private Button mAddIngredientButton;
-    private List<String> mDirections;
+    private Button mAddDirectionButton;
     private ListView mIngredientListView;
+    private ListView mDirectionsListView;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
     private DatabaseReference mRecipeDatabaseReference;
@@ -70,7 +71,14 @@ public class AddEditActivity extends AppCompatActivity {
             mIngredients.add(new Ingredient(0,null,"None"));
         }
         mIngredients.remove(position);
-        mAdapter.notifyDataSetChanged();
+        mIngredientAdapter.notifyDataSetChanged();
+    }
+    public static void removeDirection(int position) {
+        if(mDirections.size() == 1){
+            mDirections.add(new Direction("None"));
+        }
+        mDirections.remove(position);
+        mDirectionAdapter.notifyDataSetChanged();
     }
 
     public void addIngredient() {
@@ -96,7 +104,7 @@ public class AddEditActivity extends AppCompatActivity {
                         if(mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")){
                             mIngredients.remove(0);
                         }
-                        mAdapter.notifyDataSetChanged();
+                        mIngredientAdapter.notifyDataSetChanged();
                             }}
                 })
                 .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
@@ -112,7 +120,7 @@ public class AddEditActivity extends AppCompatActivity {
                         if(mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")){
                             mIngredients.remove(0);
                         }
-                        mAdapter.notifyDataSetChanged();
+                        mIngredientAdapter.notifyDataSetChanged();
                         addIngredient();
                     }
                 })
@@ -121,6 +129,64 @@ public class AddEditActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void addDirection() {
+final EditText directionEditText = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
+                .setTitle("Add a new Direction")
+                .setView(directionEditText)
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(!directionEditText.getText().toString().equals("")){
+                            mDirections.add(new Direction(directionEditText.getText().toString()));
+                            Direction firstDirection = (Direction) mDirections.get(0);
+                            if(mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")){
+                                mDirections.remove(0);
+                            }
+                            mDirectionAdapter.notifyDataSetChanged();
+                        }}
+                })
+                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDirections.add(new Direction(directionEditText.getText().toString()));
+                        Direction firstDirection = (Direction) mDirections.get(0);
+                        if(mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")){
+                            mDirections.remove(0);
+                        }
+                        mDirectionAdapter.notifyDataSetChanged();
+                        addDirection();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
+
+
+    public static void updateDirection(final int position, Activity context) {
+        final EditText directionBox = new EditText(context);
+        Direction thisDirection = (Direction) mDirections.get(position);
+        directionBox.setText(thisDirection.getDirectionText());
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Update Direction")
+                .setView(directionBox)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(!directionBox.getText().toString().equals("")){
+                            mDirections.set(position,new Direction(directionBox.getText().toString()));
+                            Direction firstDirection = (Direction) mDirections.get(0);
+                            if(mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")){
+                                mDirections.remove(0);
+                            }
+                            mDirectionAdapter.notifyDataSetChanged();
+                        }}
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+        }
     public static void updateIngredient(final int position, Activity context) {
         LayoutInflater inflater = context.getLayoutInflater();
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
@@ -146,15 +212,13 @@ public class AddEditActivity extends AppCompatActivity {
                             if(mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")){
                                 mIngredients.remove(0);
                             }
-                            mAdapter.notifyDataSetChanged();
+                            mIngredientAdapter.notifyDataSetChanged();
                         }}
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
-        mIngredients.set(position, new Ingredient(0,null,null));
-        mAdapter.notifyDataSetChanged();
-    }
+        }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +232,7 @@ public class AddEditActivity extends AppCompatActivity {
         mServesEditText = findViewById(R.id.servings_edit_text);
         mFavoritesCheckBox = findViewById(R.id.favorites_check_box);
         mAddIngredientButton = findViewById(R.id.add_ingredient_button);
+        mAddDirectionButton = findViewById(R.id.add_direction_button);
         mRecipeTitleEditText.clearFocus();
         mUserId = getIntent().getStringExtra("userId");
         mTaskId = getIntent().getStringExtra("taskId");
@@ -179,10 +244,16 @@ public class AddEditActivity extends AppCompatActivity {
 
         mIngredientListView = findViewById(R.id.ingredients_list_view);
         mIngredients = new ArrayList<>();
-        mIngredients.add(new Ingredient(0,null,getString(R.string.no_ingredients)));
-        mAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
+        mIngredients.add(new Ingredient(0,null,getString(R.string.none_loaded)));
+        mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
+        mIngredientListView.setAdapter(mIngredientAdapter);
 
-        mIngredientListView.setAdapter(mAdapter);
+        mDirectionsListView = findViewById(R.id.directions_list_view);
+        mDirections = new ArrayList<>();
+        mDirections.add(new Direction(getString(R.string.none_loaded)));
+        mDirectionAdapter = new DirectionAdapter(this, R.layout.direction_display_list_view, mDirections);
+        mDirectionsListView.setAdapter(mDirectionAdapter);
+
 
         if (mTaskId.equals("new")) {
             setTitle("Add New Recipe");
@@ -254,22 +325,29 @@ public class AddEditActivity extends AppCompatActivity {
                             prepTime,
                             cookTime,
                             servings,
-                            mIngredients, null,
+                            mIngredients,
+                            mDirections,
                             photoUri,
                             favoriteSelection,
                             null,
                             mUserId);
                     mRecipeDatabaseReference.push().setValue(recipe);
                     finish();
-//TODO: add the ingredients and directions fuctionality.  Ingredients might be best served as a custom object, perhaps with an array adapter?
+//TODO: handle screen rotation and pauses and such
                 }
             }
         });
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mAddIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addIngredient();
+            }
+        });
+        mAddDirectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addDirection();
             }
         });
         mClearButton.setOnClickListener(new View.OnClickListener() {
