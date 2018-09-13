@@ -69,12 +69,22 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
         shareIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String ingredientText = "";
+                for(Ingredient ingredient: recipe.getIngredients()){
+                    ingredientText = ingredientText + "\n" + ingredient.getQuantity() + " " + ingredient.getMeasurement() + " " + ingredient.getIngredient();
+                }
+                String directionText = "";
+                int positionCounter = 0;
+                for(Direction direction : recipe.getDirections()){
+                    positionCounter += 1;
+                    directionText = directionText + "\n" + String.valueOf(positionCounter) + ". " + direction.getDirectionText();
+                }
                 String tempText = recipe.getTitle() +
                         "\nPrep Time: " + recipe.getPrepTime() +
                         "\nCook Time: " + recipe.getCookTime() +
                         "\nServes: " + recipe.getServings() +
-                        "\nIngredients: " + recipe.getIngredients() +
-                        "\nDirections: " + recipe.getDirections();
+                        "\nIngredients: " + ingredientText +
+                        "\nDirections: " + directionText;
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_TEXT,tempText);

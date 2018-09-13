@@ -2,9 +2,11 @@ package com.fatmogul.recipebox;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -78,12 +80,23 @@ private Button mFavoriteButton;
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String ingredientText = "";
+                for(Ingredient ingredient: mIngredients){
+                    ingredientText = ingredientText + "\n" + ingredient.getQuantity() + " " + ingredient.getMeasurement() + " " + ingredient.getIngredient();
+                }
+                String directionText = "";
+                int positionCounter = 0;
+                for(Direction direction : mDirections){
+                    positionCounter += 1;
+                    directionText = directionText + "\n" + String.valueOf(positionCounter) + ". " + direction.getDirectionText();
+                }
                 String tempText = mRecipe.getTitle() +
                         "\nPrep Time: " + mRecipe.getPrepTime() +
                         "\nCook Time: " + mRecipe.getCookTime() +
                         "\nServes: " + mRecipe.getServings() +
-                        "\nIngredients: " + mRecipe.getIngredients() +
-                        "\nDirections: " + mRecipe.getDirections();
+                        "\nIngredients: " + ingredientText +
+                        "\nDirections: " + directionText;
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_TEXT,tempText);
@@ -95,9 +108,9 @@ private Button mFavoriteButton;
 
         mFavoriteButton = findViewById(R.id.detail_favorite_button);
         if(mRecipe.isFavorite()){
-            mFavoriteButton.setText("Remove from Favorites");
+            mFavoriteButton.setText(R.string.unfavorite);
         }else{
-            mFavoriteButton.setText("Add to Favorites");
+            mFavoriteButton.setText(R.string.add_favorite);
         }
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,11 +120,11 @@ private Button mFavoriteButton;
                 if(isFavorite){
                     isFavorite = false;
                     toastText = mRecipe.getTitle() + " unfavorited.";
-                    mFavoriteButton.setText("Add to Favorites");
+                    mFavoriteButton.setText(R.string.add_favorite);
                 }else{
                     isFavorite = true;
                     toastText = mRecipe.getTitle() + " favorited.";
-                    mFavoriteButton.setText("Remove from Favorites");
+                    mFavoriteButton.setText(R.string.unfavorite);
                 }
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 DatabaseReference rf = db.getReference().child("users/" + mRecipe.getUserId() + "/recipes");
@@ -128,8 +141,29 @@ private Button mFavoriteButton;
                 Intent intent = new Intent(DetailActivity.this,AddEditActivity.class);
                 intent.putExtra("userId",mRecipe.getUserId());
                 intent.putExtra("taskId","edit");
+                intent.putExtra("recipe",mRecipe);
+                intent.putParcelableArrayListExtra("ingredients",mIngredients);
+                intent.putParcelableArrayListExtra("directions",mDirections);
+
                 startActivity(intent);
             }
         });
+            }
+
+    @Override
+    public void onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this);
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

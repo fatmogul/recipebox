@@ -17,6 +17,8 @@
     <string name="change_photo">Change Photo</string>
     <string name="upload_your_photo_here">Upload your Photo here</string>
     <string name="none_loaded">None</string>
+    <string name="unfavorite">UnFavorite</string>
+    <string name="add_favorite">Add Favorite</string>
 
     <string-array name="food_filter">
         <item>All Foods</item>

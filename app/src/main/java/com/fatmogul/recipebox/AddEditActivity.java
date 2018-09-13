@@ -13,7 +13,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -37,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AddEditActivity extends AppCompatActivity {
 
@@ -52,6 +52,7 @@ public class AddEditActivity extends AppCompatActivity {
     private Button mSaveButton;
     private Button mClearButton;
     private Button mCancelButton;
+    private Button mDeleteButton;
     private ImageView mImageView;
     private EditText mRecipeTitleEditText;
     private EditText mPrepTimeEditEdit;
@@ -65,114 +66,24 @@ public class AddEditActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
     private DatabaseReference mRecipeDatabaseReference;
+    private Recipe mRecipe;
     private StorageReference mRecipePhotoStorageReference;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("ingredients",mIngredients);
-        outState.putParcelableArrayList("directions",mDirections);
-        if(mPhotoDownloadUri != null){
-        outState.putString("photoUriString",mPhotoDownloadUri.toString());}
-        super.onSaveInstanceState(outState);
-    }
-
     public static void removeIngredient(int position) {
-        if(mIngredients.size() == 1){
-            mIngredients.add(new Ingredient(0,null,"None"));
+        if (mIngredients.size() == 1) {
+            mIngredients.add(new Ingredient(0, null, "None"));
         }
         mIngredients.remove(position);
         mIngredientAdapter.notifyDataSetChanged();
     }
+
     public static void removeDirection(int position) {
-        if(mDirections.size() == 1){
+        if (mDirections.size() == 1) {
             mDirections.add(new Direction("None"));
         }
         mDirections.remove(position);
         mDirectionAdapter.notifyDataSetChanged();
     }
-
-    public void addIngredient() {
-
-        LayoutInflater inflater = getLayoutInflater();
-        final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
-
-        AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
-                .setTitle("Add a new Ingredient")
-                .setView(dialogBox)
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
-                        EditText measurementBox = dialogBox.findViewById(R.id.measurement_add_edit_text);
-                        EditText ingredientBox = dialogBox.findViewById(R.id.ingredient_add_edit_text);
-                        if(!qtyBox.getText().toString().equals("") && !measurementBox.getText().toString().equals("") && !ingredientBox.toString().equals("")){
-
-
-                        mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
-                                measurementBox.getText().toString(), ingredientBox.getText().toString()));
-                        Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
-                        if(mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")){
-                            mIngredients.remove(0);
-                        }
-                        mIngredientAdapter.notifyDataSetChanged();
-                            }}
-                })
-                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
-                        EditText measurementBox = dialogBox.findViewById(R.id.measurement_add_edit_text);
-                        EditText ingredientBox = dialogBox.findViewById(R.id.ingredient_add_edit_text);
-
-                        mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
-                                measurementBox.getText().toString(), ingredientBox.getText().toString()));
-                        Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
-                        if(mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")){
-                            mIngredients.remove(0);
-                        }
-                        mIngredientAdapter.notifyDataSetChanged();
-                        addIngredient();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-        dialog.show();
-    }
-
-    public void addDirection() {
-final EditText directionEditText = new EditText(this);
-        AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
-                .setTitle("Add a new Direction")
-                .setView(directionEditText)
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(!directionEditText.getText().toString().equals("")){
-                            mDirections.add(new Direction(directionEditText.getText().toString()));
-                            Direction firstDirection = (Direction) mDirections.get(0);
-                            if(mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")){
-                                mDirections.remove(0);
-                            }
-                            mDirectionAdapter.notifyDataSetChanged();
-                        }}
-                })
-                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mDirections.add(new Direction(directionEditText.getText().toString()));
-                        Direction firstDirection = (Direction) mDirections.get(0);
-                        if(mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")){
-                            mDirections.remove(0);
-                        }
-                        mDirectionAdapter.notifyDataSetChanged();
-                        addDirection();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-        dialog.show();
-    }
-
 
     public static void updateDirection(final int position, Activity context) {
         final EditText directionBox = new EditText(context);
@@ -184,19 +95,21 @@ final EditText directionEditText = new EditText(this);
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(!directionBox.getText().toString().equals("")){
-                            mDirections.set(position,new Direction(directionBox.getText().toString()));
+                        if (!directionBox.getText().toString().equals("")) {
+                            mDirections.set(position, new Direction(directionBox.getText().toString()));
                             Direction firstDirection = (Direction) mDirections.get(0);
-                            if(mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")){
+                            if (mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")) {
                                 mDirections.remove(0);
                             }
                             mDirectionAdapter.notifyDataSetChanged();
-                        }}
+                        }
+                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
-        }
+    }
+
     public static void updateIngredient(final int position, Activity context) {
         LayoutInflater inflater = context.getLayoutInflater();
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
@@ -213,22 +126,117 @@ final EditText directionEditText = new EditText(this);
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(!qtyBox.getText().toString().equals("") && !measurementBox.getText().toString().equals("") && !ingredientBox.toString().equals("")){
+                        if (!qtyBox.getText().toString().equals("") && !measurementBox.getText().toString().equals("") && !ingredientBox.toString().equals("")) {
 
 
-                            mIngredients.set(position,new Ingredient(Long.parseLong(qtyBox.getText().toString()),
+                            mIngredients.set(position, new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                     measurementBox.getText().toString(), ingredientBox.getText().toString()));
                             Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
-                            if(mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")){
+                            if (mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")) {
                                 mIngredients.remove(0);
                             }
                             mIngredientAdapter.notifyDataSetChanged();
-                        }}
+                        }
+                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("ingredients", mIngredients);
+        outState.putParcelableArrayList("directions", mDirections);
+        if (mPhotoDownloadUri != null) {
+            outState.putString("photoUriString", mPhotoDownloadUri.toString());
         }
+        super.onSaveInstanceState(outState);
+    }
+
+    public void addIngredient() {
+
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
+                .setTitle("Add a new Ingredient")
+                .setView(dialogBox)
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
+                        EditText measurementBox = dialogBox.findViewById(R.id.measurement_add_edit_text);
+                        EditText ingredientBox = dialogBox.findViewById(R.id.ingredient_add_edit_text);
+                        if (!qtyBox.getText().toString().equals("") && !measurementBox.getText().toString().equals("") && !ingredientBox.toString().equals("")) {
+
+
+                            mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
+                                    measurementBox.getText().toString(), ingredientBox.getText().toString()));
+                            Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
+                            if (mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")) {
+                                mIngredients.remove(0);
+                            }
+                            mIngredientAdapter.notifyDataSetChanged();
+                        }
+                    }
+                })
+                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
+                        EditText measurementBox = dialogBox.findViewById(R.id.measurement_add_edit_text);
+                        EditText ingredientBox = dialogBox.findViewById(R.id.ingredient_add_edit_text);
+
+                        mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
+                                measurementBox.getText().toString(), ingredientBox.getText().toString()));
+                        Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
+                        if (mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")) {
+                            mIngredients.remove(0);
+                        }
+                        mIngredientAdapter.notifyDataSetChanged();
+                        addIngredient();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
+
+    public void addDirection() {
+        final EditText directionEditText = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
+                .setTitle("Add a new Direction")
+                .setView(directionEditText)
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!directionEditText.getText().toString().equals("")) {
+                            mDirections.add(new Direction(directionEditText.getText().toString()));
+                            Direction firstDirection = (Direction) mDirections.get(0);
+                            if (mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")) {
+                                mDirections.remove(0);
+                            }
+                            mDirectionAdapter.notifyDataSetChanged();
+                        }
+                    }
+                })
+                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDirections.add(new Direction(directionEditText.getText().toString()));
+                        Direction firstDirection = (Direction) mDirections.get(0);
+                        if (mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")) {
+                            mDirections.remove(0);
+                        }
+                        mDirectionAdapter.notifyDataSetChanged();
+                        addDirection();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,35 +251,58 @@ final EditText directionEditText = new EditText(this);
         mFavoritesCheckBox = findViewById(R.id.favorites_check_box);
         mAddIngredientButton = findViewById(R.id.add_ingredient_button);
         mAddDirectionButton = findViewById(R.id.add_direction_button);
+        mDeleteButton = findViewById(R.id.delete_recipe_button);
         mRecipeTitleEditText.clearFocus();
         mUserId = getIntent().getStringExtra("userId");
         mTaskId = getIntent().getStringExtra("taskId");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
+        if(mTaskId.equals("edit")){
+            mRecipe = getIntent().getParcelableExtra("recipe");
+            mDeleteButton.setVisibility(View.VISIBLE);
 
+            try{
+            mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());}
+            catch(Exception e){}
+            mRecipeTitleEditText.setText(mRecipe.getTitle());
+            mPrepTimeEditEdit.setText(String.valueOf(mRecipe.getPrepTime()));
+            mCookTimeEditText.setText(String.valueOf(mRecipe.getCookTime()));
+            mServesEditText.setText(String.valueOf(mRecipe.getServings()));
+
+        }
         mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
         mRecipePhotoStorageReference = mFirebaseStorage.getReference().child("users/" + mUserId + "/photos");
 
         mIngredientListView = findViewById(R.id.ingredients_list_view);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mIngredients = savedInstanceState.getParcelableArrayList("ingredients");
             try {
                 mPhotoDownloadUri = Uri.parse(savedInstanceState.getString("photoUriString"));
-            }catch (Exception e){
+            } catch (Exception e) {
                 mPhotoDownloadUri = null;
             }
-            }else{
-        mIngredients = new ArrayList<>();
-        mIngredients.add(new Ingredient(0,null,getString(R.string.none_loaded)));}
+        } else {
+            if (mTaskId.equals("edit")) {
+                mIngredients = getIntent().getParcelableArrayListExtra("ingredients");
+            } else {
+                mIngredients = new ArrayList<>();
+                mIngredients.add(new Ingredient(0, null, getString(R.string.none_loaded)));
+            }
+        }
         mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
         mIngredientListView.setAdapter(mIngredientAdapter);
 
         mDirectionsListView = findViewById(R.id.directions_list_view);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mDirections = savedInstanceState.getParcelableArrayList("directions");
-        }else{
-        mDirections = new ArrayList<>();
-        mDirections.add(new Direction(getString(R.string.none_loaded)));}
+        } else {
+            if (mTaskId.equals("edit")) {
+                mDirections = getIntent().getParcelableArrayListExtra("directions");
+            } else {
+                mDirections = new ArrayList<>();
+                mDirections.add(new Direction(getString(R.string.none_loaded)));
+            }
+        }
         mDirectionAdapter = new DirectionAdapter(this, R.layout.direction_display_list_view, mDirections);
         mDirectionsListView.setAdapter(mDirectionAdapter);
 
@@ -279,9 +310,7 @@ final EditText directionEditText = new EditText(this);
         if (mTaskId.equals("new")) {
             setTitle("Add New Recipe");
         } else {
-            setTitle("A name goes here!");
-
-            //TODO: get recipe name from database for title
+            setTitle("Edit " + mRecipe.getTitle());
         }
         mPhotoPickerButton = findViewById(R.id.photo_picker_button);
         mSaveButton = findViewById(R.id.save_recipe_button);
@@ -354,16 +383,31 @@ final EditText directionEditText = new EditText(this);
                             favoriteSelection,
                             null,
                             mUserId);
-                    if(mTaskId == "new") {
+                    if (mTaskId.equals("new")) {
                         mRecipeDatabaseReference.push().setValue(recipe);
+                        finish();
+                    } else if (mTaskId.equals("edit")){
+                        DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
+                        rf.setValue(recipe);
+                        Intent intent = new Intent(AddEditActivity.this,DetailActivity.class);
+                        intent.putExtra("recipe",recipe);
+                        intent.putParcelableArrayListExtra("ingredients",recipe.getIngredients());
+                        intent.putParcelableArrayListExtra("directions",recipe.getDirections());
+                        startActivity(intent);
                     }
-                    else{
-                        Log.d("We've got some splaining to do", "onClick: ");
-                    }
-                    finish();
-//TODO: handle screen rotation and pauses and such
+
                 }
             }
+        });
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
+                rf.removeValue();
+                Intent intent = new Intent(AddEditActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();}
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mAddIngredientButton.setOnClickListener(new View.OnClickListener() {
@@ -386,23 +430,6 @@ final EditText directionEditText = new EditText(this);
             }
         });
         setPicture();
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        NavUtils.navigateUpFromSameTask(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
