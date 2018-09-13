@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -278,6 +279,8 @@ final EditText directionEditText = new EditText(this);
         if (mTaskId.equals("new")) {
             setTitle("Add New Recipe");
         } else {
+            setTitle("A name goes here!");
+
             //TODO: get recipe name from database for title
         }
         mPhotoPickerButton = findViewById(R.id.photo_picker_button);
@@ -351,7 +354,12 @@ final EditText directionEditText = new EditText(this);
                             favoriteSelection,
                             null,
                             mUserId);
-                    mRecipeDatabaseReference.push().setValue(recipe);
+                    if(mTaskId == "new") {
+                        mRecipeDatabaseReference.push().setValue(recipe);
+                    }
+                    else{
+                        Log.d("We've got some splaining to do", "onClick: ");
+                    }
                     finish();
 //TODO: handle screen rotation and pauses and such
                 }

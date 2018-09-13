@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Recipe implements Parcelable{
 
@@ -47,6 +46,7 @@ public class Recipe implements Parcelable{
         favorite = in.readByte() != 0;
         recipeId = in.readString();
         userId = in.readString();
+        //ingredients = in.readArrayList(Ingredient);
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -84,7 +84,7 @@ public class Recipe implements Parcelable{
         this.cookTime = cookTime;
     }
 
-    public List getIngredients() {
+    public ArrayList<Ingredient> getIngredients() {
         return ingredients;
     }
 

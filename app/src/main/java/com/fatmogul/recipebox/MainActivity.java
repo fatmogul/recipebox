@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -272,6 +273,22 @@ public class MainActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     boolean meetSearchCriteria = true;
                     Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
+                    ArrayList<Ingredient> ingredientTempArray = new ArrayList<>();
+                    DataSnapshot ingredientSnap = dataSnapshot.child("/ingredients");
+                    Iterable<DataSnapshot> ingredientMatchSnapshot = ingredientSnap.getChildren();
+                    for(DataSnapshot ingredient : ingredientMatchSnapshot){
+                        ingredientTempArray.add(ingredient.getValue(Ingredient.class));
+                    }
+                    thisRecipe.setIngredients(ingredientTempArray);
+
+                    ArrayList<Direction> directionTempArray = new ArrayList<>();
+                    DataSnapshot directionSnap = dataSnapshot.child("/directions");
+                    Iterable<DataSnapshot> directionMatchSnapshot = directionSnap.getChildren();
+                    for(DataSnapshot direction : directionMatchSnapshot){
+                        directionTempArray.add(direction.getValue(Direction.class));
+                        }
+                    thisRecipe.setDirections(directionTempArray);
+
                     thisRecipe.setRecipeId(dataSnapshot.getKey());
                     thisRecipe.setUserId(mUserId);
                     mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("recipeId").setValue(dataSnapshot.getKey());

@@ -48,7 +48,12 @@ public class DirectionAdapter extends ArrayAdapter<Direction> {
                 AddEditActivity.removeDirection(position);
             }
         });
-        if (directionEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
+        if(convertView.getContext().toString().contains("DetailActivity")){
+            removeButton.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
+        }else{
+
+            if (directionEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
             directionLabelTextView.setVisibility(View.GONE);
             removeButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
@@ -58,7 +63,7 @@ public class DirectionAdapter extends ArrayAdapter<Direction> {
             removeButton.setVisibility(View.VISIBLE);
             editButton.setVisibility(View.VISIBLE);
             directionEditText.setVisibility(View.VISIBLE);
-        }
+        }}
 
 
         return convertView;

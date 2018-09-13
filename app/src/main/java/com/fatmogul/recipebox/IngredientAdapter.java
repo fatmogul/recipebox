@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,7 +27,6 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
         if (convertView == null) {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.ingredient_display_list_view, parent, false);
         }
-
         ImageView removeButton = convertView.findViewById(R.id.remove_ingredient_button);
         final TextView quantityEditText = convertView.findViewById(R.id.quantity_edit_text);
         //TODO: Probably want to change the measurement field into a spinner of selection options, right?
@@ -54,6 +54,10 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
                 AddEditActivity.removeIngredient(position);
             }
         });
+        if(convertView.getContext().toString().contains("DetailActivity")){
+            removeButton.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
+        }else{
         if (ingredientEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
             removeButton.setVisibility(View.GONE);
             quantityEditText.setVisibility(View.GONE);
@@ -66,7 +70,7 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
             measurementEditText.setVisibility(View.VISIBLE);
             editButton.setVisibility(View.VISIBLE);
             ingredientEditText.setVisibility(View.VISIBLE);
-        }
+        }}
 
 
         return convertView;
