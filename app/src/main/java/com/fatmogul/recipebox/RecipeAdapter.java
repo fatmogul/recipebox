@@ -58,6 +58,7 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),DetailActivity.class);
+                intent.putExtra("recipe",recipe);
                 getContext().startActivity(intent);
             }
         });
