@@ -59,7 +59,7 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
             quantityEditText.setVisibility(View.GONE);
             measurementEditText.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
-            ingredientEditText.setVisibility(View.VISIBLE);
+            ingredientEditText.setVisibility(View.GONE);
         } else {
             removeButton.setVisibility(View.VISIBLE);
             quantityEditText.setVisibility(View.VISIBLE);

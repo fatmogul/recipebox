@@ -66,6 +66,15 @@ public class AddEditActivity extends AppCompatActivity {
     private DatabaseReference mRecipeDatabaseReference;
     private StorageReference mRecipePhotoStorageReference;
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("ingredients",mIngredients);
+        outState.putParcelableArrayList("directions",mDirections);
+        if(mPhotoDownloadUri != null){
+        outState.putString("photoUriString",mPhotoDownloadUri.toString());}
+        super.onSaveInstanceState(outState);
+    }
+
     public static void removeIngredient(int position) {
         if(mIngredients.size() == 1){
             mIngredients.add(new Ingredient(0,null,"None"));
@@ -243,14 +252,25 @@ final EditText directionEditText = new EditText(this);
         mRecipePhotoStorageReference = mFirebaseStorage.getReference().child("users/" + mUserId + "/photos");
 
         mIngredientListView = findViewById(R.id.ingredients_list_view);
+        if(savedInstanceState != null){
+            mIngredients = savedInstanceState.getParcelableArrayList("ingredients");
+            try {
+                mPhotoDownloadUri = Uri.parse(savedInstanceState.getString("photoUriString"));
+            }catch (Exception e){
+                mPhotoDownloadUri = null;
+            }
+            }else{
         mIngredients = new ArrayList<>();
-        mIngredients.add(new Ingredient(0,null,getString(R.string.none_loaded)));
+        mIngredients.add(new Ingredient(0,null,getString(R.string.none_loaded)));}
         mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
         mIngredientListView.setAdapter(mIngredientAdapter);
 
         mDirectionsListView = findViewById(R.id.directions_list_view);
+        if(savedInstanceState != null){
+            mDirections = savedInstanceState.getParcelableArrayList("directions");
+        }else{
         mDirections = new ArrayList<>();
-        mDirections.add(new Direction(getString(R.string.none_loaded)));
+        mDirections.add(new Direction(getString(R.string.none_loaded)));}
         mDirectionAdapter = new DirectionAdapter(this, R.layout.direction_display_list_view, mDirections);
         mDirectionsListView.setAdapter(mDirectionAdapter);
 

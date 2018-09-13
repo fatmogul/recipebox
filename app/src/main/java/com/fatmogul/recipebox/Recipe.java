@@ -160,5 +160,5 @@ public class Recipe implements Parcelable{
         dest.writeByte((byte) (favorite ? 1 : 0));
         dest.writeString(recipeId);
         dest.writeString(userId);
-    }
+        }
 }
