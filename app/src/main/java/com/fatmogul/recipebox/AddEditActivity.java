@@ -405,13 +405,24 @@ public class AddEditActivity extends AppCompatActivity {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
-                rf.removeValue();
-                Intent intent = new Intent(AddEditActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();}
-        });
+                AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
+                        .setTitle("Are you sure you want to delete " + mRecipe.getTitle() + "?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
+                                rf.removeValue();
+                                Intent intent = new Intent(AddEditActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();}
+                            }
+                        )
+                        .setNegativeButton("No", null)
+                        .create();
+                dialog.show();}});
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mAddIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
