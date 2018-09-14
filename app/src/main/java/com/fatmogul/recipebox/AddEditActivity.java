@@ -67,6 +67,7 @@ public class AddEditActivity extends AppCompatActivity {
     private FirebaseStorage mFirebaseStorage;
     private DatabaseReference mRecipeDatabaseReference;
     private Recipe mRecipe;
+    private String mRecipeId;
     private StorageReference mRecipePhotoStorageReference;
 
     public static void removeIngredient(int position) {
@@ -257,10 +258,12 @@ public class AddEditActivity extends AppCompatActivity {
         mTaskId = getIntent().getStringExtra("taskId");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
+        mRecipeId = null;
         if(mTaskId.equals("edit")){
             mRecipe = getIntent().getParcelableExtra("recipe");
             mDeleteButton.setVisibility(View.VISIBLE);
-
+            mRecipeId = mRecipe.getRecipeId();
+            mFavoritesCheckBox.setChecked(mRecipe.isFavorite());
             try{
             mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());}
             catch(Exception e){}
@@ -381,7 +384,7 @@ public class AddEditActivity extends AppCompatActivity {
                             mDirections,
                             photoUri,
                             favoriteSelection,
-                            null,
+                            mRecipeId,
                             mUserId);
                     if (mTaskId.equals("new")) {
                         mRecipeDatabaseReference.push().setValue(recipe);

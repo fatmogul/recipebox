@@ -33,6 +33,7 @@ private TextView mPrepTimeTextView;
 private TextView mCookTimeTextView;
 private TextView mServingsTextView;
 private ImageView mImageView;
+private TextView mRecipeTitleView;
 private Uri mPhotoDownloadUri;
 
 private Button mEditButton;
@@ -62,11 +63,13 @@ private Button mFavoriteButton;
         mCookTimeTextView = findViewById(R.id.cook_time_variable_text_view_detail_screen);
         mServingsTextView = findViewById(R.id.servings_variable_detail_view);
         mImageView = findViewById(R.id.detail_image_view);
+        mRecipeTitleView = findViewById(R.id.recipe_title_detail_text_view);
 
 
         mPrepTimeTextView.setText(String.valueOf(mRecipe.getPrepTime()));
         mCookTimeTextView.setText(String.valueOf(mRecipe.getCookTime()));
         mServingsTextView.setText(String.valueOf(mRecipe.getServings()));
+        mRecipeTitleView.setText(mRecipe.getTitle());
         try{
         mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(mImageView);

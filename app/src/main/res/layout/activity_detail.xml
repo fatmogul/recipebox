@@ -1,192 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DetailActivity">
-    <ImageView
+
+    <ScrollView
+        android:id="@+id/detail_activity_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/detail_image_view"
-        android:src="@drawable/ic_add_a_photo_grey_24dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-<android.support.constraint.ConstraintLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/time_holder"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/detail_image_view">
-<android.support.constraint.ConstraintLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/prep_time_holder"
-    android:paddingRight="10dp"
-    app:layout_constraintRight_toLeftOf="@id/cook_time_holder">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/prep_time_text_view_detail_screen"
-        android:text="@string/prep_time"
-        android:paddingLeft="16dp"
-        android:paddingRight="10dp"
-        android:paddingTop="16dp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toLeftOf="@id/prep_time_variable_text_view_detail_screen"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/prep_time_variable_text_view_detail_screen"
-        android:text="30 minutes"
-        android:paddingTop="16dp"
-        app:layout_constraintLeft_toRightOf="@id/prep_time_text_view_detail_screen"/>
+        app:layout_constraintBottom_toTopOf="@id/buttons_wrapper">
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".DetailActivity"
+            android:paddingBottom="50dp">
+
+            <ImageView
+                android:id="@+id/detail_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/ic_add_a_photo_grey_24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/recipe_title_detail_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/detail_image_view" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/time_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recipe_title_detail_text_view">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/prep_time_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    app:layout_constraintRight_toLeftOf="@id/cook_time_holder">
+
+                    <TextView
+                        android:id="@+id/prep_time_text_view_detail_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/prep_time"
+                        android:textStyle="bold"
+                        app:layout_constraintRight_toLeftOf="@id/prep_time_variable_text_view_detail_screen" />
+
+                    <TextView
+                        android:id="@+id/prep_time_variable_text_view_detail_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
+                        android:text="30 minutes"
+                        app:layout_constraintLeft_toRightOf="@id/prep_time_text_view_detail_screen" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cook_time_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    app:layout_constraintLeft_toRightOf="@id/prep_time_holder">
+
+                    <TextView
+                        android:id="@+id/cook_time_text_view_detail_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/cook_time"
+                        android:textStyle="bold"
+                        app:layout_constraintRight_toLeftOf="@id/cook_time_variable_text_view_detail_screen" />
+
+                    <TextView
+                        android:id="@+id/cook_time_variable_text_view_detail_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="16dp"
+                        android:paddingTop="16dp"
+                        android:text="25 minutes"
+                        app:layout_constraintRight_toLeftOf="@id/cook_time_variable_text_view_detail_screen" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/servings_constraint_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/time_holder">
+
+                <TextView
+                    android:id="@+id/servings_label_detail_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:text="@string/serves"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/servings_variable_detail_view"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/servings_variable_detail_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="19"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/servings_label_detail_view"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/ingredients_detail_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="@string/ingredients"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/servings_constraint_view" />
+
+            <com.fatmogul.recipebox.NonScrollListView
+                android:id="@+id/ingredients_detail_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ingredients_detail_text_view" />
+
+            <TextView
+                android:id="@+id/directions_detail_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:text="Directions"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ingredients_detail_list_view" />
+
+            <com.fatmogul.recipebox.NonScrollListView
+                android:id="@+id/directions_detail_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/directions_detail_text_view" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cook_time_holder"
-        android:paddingLeft="10dp"
-        app:layout_constraintLeft_toRightOf="@id/prep_time_holder"
-        >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cook_time_text_view_detail_screen"
-        android:text="@string/cook_time"
-        android:textStyle="bold"
-        android:paddingRight="10dp"
-        android:paddingTop="16dp"
-        app:layout_constraintRight_toLeftOf="@id/cook_time_variable_text_view_detail_screen"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="25 minutes"
-        android:paddingRight="16dp"
-        android:paddingTop="16dp"
-        android:id="@+id/cook_time_variable_text_view_detail_screen"
-        app:layout_constraintRight_toLeftOf="@id/cook_time_variable_text_view_detail_screen"/>
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/servings_constraint_view"
-        android:padding="5dp"
-
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/time_holder">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/servings_label_detail_view"
-        android:text="@string/serves"
-        android:textStyle="bold"
-        android:paddingRight="10dp"
-        app:layout_constraintRight_toLeftOf="@+id/servings_variable_detail_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/servings_variable_detail_view"
-            android:text="19"
-            app:layout_constraintRight_toLeftOf="@id/servings_label_detail_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-    </android.support.constraint.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/ingredients_detail_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:text="@string/ingredients"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/servings_constraint_view" />
-
-    <com.fatmogul.recipebox.NonScrollListView
-        android:id="@+id/ingredients_detail_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ingredients_detail_text_view" />
-
-    <TextView
-        android:id="@+id/directions_detail_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:text="Directions"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ingredients_detail_list_view" />
-
-    <com.fatmogul.recipebox.NonScrollListView
-        android:id="@+id/directions_detail_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/directions_detail_text_view" />
-
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/buttons_wrapper"
-        app:layout_constraintTop_toBottomOf="@id/directions_detail_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back"
+        android:padding="3dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
+            android:id="@+id/detail_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_edit_button"
             android:text="Edit"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/detail_share_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_share_button"
-            android:text="Share"
-            app:layout_constraintRight_toLeftOf="@id/detail_favorite_button"
-            app:layout_constraintLeft_toRightOf="@id/detail_edit_button"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <Button
+            android:id="@+id/detail_share_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_favorite_button"
-            android:text="Favorite"
+            android:text="Share"
+            app:layout_constraintLeft_toRightOf="@id/detail_edit_button"
+            app:layout_constraintRight_toLeftOf="@id/detail_favorite_button"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <Button
+            android:id="@+id/detail_favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorite"
             app:layout_constraintLeft_toRightOf="@id/detail_share_button"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
-</ScrollView>
