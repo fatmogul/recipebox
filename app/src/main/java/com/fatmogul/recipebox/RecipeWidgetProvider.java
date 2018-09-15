@@ -27,88 +27,40 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
-    ArrayList<Recipe> mRecipes;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mRecipeDatabaseReference;
-    private ChildEventListener mChildEventListener;
-    private ListView mRecipeListView;
-    private RecipeAdapter mAdapter;
-    private ArrayList<String> mKeys;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private String mUserId;
-    private String mSearchTerm;
-    private boolean mSearchQueryChanged = false;
-    private String mFilterSearch;
-    private boolean mFavorites;
-    void updateAppWidget(final Context context, final AppWidgetManager appWidgetManager,
-                         final int appWidgetId) {
-
-        // Construct the RemoteViews object
-        Intent intent = new Intent(context, MainActivity.class);
-        final PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,0);
-        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = mFirebaseAuth.getInstance();
-            mRecipes = new ArrayList<>();
-
-        mUserId = mFirebaseAuth.getCurrentUser().getUid();
-        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
-        mRecipeDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-                for( DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                    Recipe thisRecipe = snapshot.getValue(Recipe.class);
-                    mRecipes.add(thisRecipe);
-                    // Instruct the widget manager to update the widget
-                }
-                for(Recipe recipe : mRecipes) {
-                    RemoteViews thisRecipeLayout = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-                    thisRecipeLayout.setTextViewText(R.id.widget_recipe_name_text_view, recipe.getTitle());
-                    views.addView(R.id.recipeWidgetListView, thisRecipeLayout);
-                    views.setOnClickPendingIntent(R.id.recipeWidgetListView, pendingIntent);
-                }
-                appWidgetManager.updateAppWidget(appWidgetId, views);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        views.setOnClickPendingIntent(R.id.recipeWidgetListView,pendingIntent);
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-
-
-
-    }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(final Context ctxt, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
 
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
+        for (int i = 0; i < appWidgetIds.length; i++) {
+                Intent svcIntent = new Intent(ctxt, WidgetService.class);
+                Log.d("first", "onUpdate: ");
+                svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+                svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+                RemoteViews widget = new RemoteViews(ctxt.getPackageName(),
+                        R.layout.recipe_widget_provider);
+                widget.setRemoteAdapter(R.id.recipeWidgetListView,
+                        svcIntent);
 
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
+                Intent clickIntent = new Intent(ctxt, DetailActivity.class);
+                PendingIntent clickPI = PendingIntent
+                        .getActivity(ctxt, 0,
+                                clickIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
 
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-}
+                widget.setPendingIntentTemplate(R.id.recipeWidgetListView, clickPI);
 
+                appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
+
+            }
+
+
+        super.onUpdate(ctxt, appWidgetManager, appWidgetIds);
+    }}
