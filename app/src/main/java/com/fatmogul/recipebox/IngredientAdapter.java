@@ -29,7 +29,6 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
         }
         ImageView removeButton = convertView.findViewById(R.id.remove_ingredient_button);
         final TextView quantityEditText = convertView.findViewById(R.id.quantity_edit_text);
-        //TODO: Probably want to change the measurement field into a spinner of selection options, right?
         final TextView measurementEditText = convertView.findViewById(R.id.measurement_edit_text);
         final TextView ingredientEditText = convertView.findViewById(R.id.ingredient_name_edit_text);
         ImageView editButton = convertView.findViewById(R.id.edit_ingredient_button);

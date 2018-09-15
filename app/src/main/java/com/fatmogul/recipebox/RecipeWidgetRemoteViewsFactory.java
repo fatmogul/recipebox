@@ -84,7 +84,17 @@ private ArrayList<Recipe> mRecipes;
             return 0;
         }
     }
-
+    //TODO: make sure data is validated appropriately
+    //todo: make a giant text field of all fields for the search function to use
+    //todo: navigation using a d-pad
+    //todo: content descriptions
+    //todo: strings in strings.xml
+    //todo: ensure rtl
+    //todo: make sure that an appbar is included
+    //todo: set up the install release gradle task
+    //todo: set up signing configuration
+    //todo: set up asynchronous task somewhere...not sure where
+    
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews row=new RemoteViews(mContext.getPackageName(),
