@@ -122,7 +122,6 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
                 recipe.setFavorite(isFavorite);
                 Toast.makeText(getContext(),toastText,Toast.LENGTH_SHORT).show();
             }});
-       // Log.d(recipe.getIngredients().get(0).getIngredient(), "getView: ");
         return convertView;
     }
 }

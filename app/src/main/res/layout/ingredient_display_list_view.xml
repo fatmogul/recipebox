@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+    <ImageView
+        android:id="@+id/remove_ingredient_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_remove_circle_outline_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/quantity_edit_text"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintRight_toLeftOf="@id/quantity_edit_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/quantity_edit_text" />
+
+    <TextView
+        android:id="@+id/quantity_edit_text"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        android:textSize="16sp"
+        android:text="3000"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:gravity="left"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/remove_ingredient_button"/>
+
+    <TextView
+        android:id="@+id/measurement_edit_text"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="tsp"
+        android:paddingRight="16dp"
+        android:gravity="left"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="@id/quantity_edit_text"
+        app:layout_constraintBottom_toBottomOf="@id/quantity_edit_text"
+        app:layout_constraintLeft_toRightOf="@id/quantity_edit_text" />
+
+    <TextView
+        android:id="@+id/ingredient_name_edit_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:gravity="left"
+        android:text="Elephant Bones"
+        android:paddingRight="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/quantity_edit_text"
+        app:layout_constraintHorizontal_weight="5"
+        app:layout_constraintLeft_toRightOf="@id/measurement_edit_text"
+        app:layout_constraintRight_toLeftOf="@id/edit_ingredient_button"
+        app:layout_constraintTop_toTopOf="@id/quantity_edit_text" />
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/edit_ingredient_button"
+        android:src="@drawable/ic_edit_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/quantity_edit_text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ingredient_name_edit_text"
+        app:layout_constraintTop_toTopOf="@id/quantity_edit_text"
+        app:layout_constraintHorizontal_weight="1"/>
+
+</android.support.constraint.ConstraintLayout>
