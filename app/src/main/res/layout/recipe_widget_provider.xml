@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -10,8 +11,10 @@
     android:textSize="20sp"
     android:textStyle="bold"
     android:elevation="4dp"
-    android:paddingLeft="4dp"
-    android:text="RecipeBox"/>
+    android:paddingStart="4dp"
+    android:paddingEnd="0dp"
+    android:text="@string/app_title_name"
+    tools:targetApi="lollipop" />
 <ListView
     android:layout_width="match_parent"
     android:layout_height="match_parent"

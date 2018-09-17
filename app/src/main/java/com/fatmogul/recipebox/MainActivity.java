@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,11 +90,7 @@ public class MainActivity extends AppCompatActivity {
         favoritesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (favoritesSpinner.getItemAtPosition(position).toString().equals("Favorites")) {
-                    mFavorites = true;
-                } else {
-                    mFavorites = false;
-                }
+                mFavorites = favoritesSpinner.getItemAtPosition(position).toString().equals("Favorites");
                 mRecipes.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
@@ -107,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mRecipeListView = findViewById(R.id.recipeListView);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = mFirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
         if (mRecipes == null) {
             mRecipes = new ArrayList<>();
         }
@@ -169,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.search_button).getActionView();
         // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
         searchView.setQueryHint("Find Recipe");
 
@@ -283,8 +280,10 @@ public class MainActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> ingredientMatchSnapshot = ingredientSnap.getChildren();
                             for (DataSnapshot ingredient : ingredientMatchSnapshot) {
                                 ingredientTempArray.add(ingredient.getValue(Ingredient.class));
+                                Log.d(Objects.requireNonNull(ingredient.getValue(Ingredient.class)).getIngredient(), "doInBackground: ");
+                                thisRecipe.setIngredientListBlob(Objects.requireNonNull(thisRecipe).getIngredientListBlob() + Objects.requireNonNull(ingredient.getValue(Ingredient.class)).getIngredient().toLowerCase());
                             }
-                            thisRecipe.setIngredients(ingredientTempArray);
+                            Objects.requireNonNull(thisRecipe).setIngredients(ingredientTempArray);
 
                             ArrayList<Direction> directionTempArray = new ArrayList<>();
                             DataSnapshot directionSnap = dataSnapshot.child("/directions");
@@ -296,12 +295,12 @@ public class MainActivity extends AppCompatActivity {
 
                             thisRecipe.setRecipeId(dataSnapshot.getKey());
                             thisRecipe.setUserId(mUserId);
-                            mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("recipeId").setValue(dataSnapshot.getKey());
+                            mRecipeDatabaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child("recipeId").setValue(dataSnapshot.getKey());
                             mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("userId").setValue(mUserId);
-                            if (mSearchTerm != null && !thisRecipe.getTitleLower().contains(mSearchTerm.toLowerCase())) {
+                            if (mSearchTerm != null && !thisRecipe.getIngredientListBlob().contains(mSearchTerm.toLowerCase())) {
                                 meetSearchCriteria = false;
                             }
-                            if (mFilterSearch != null && !mFilterSearch.equals("All Foods") && !thisRecipe.getTitleLower().contains(mFilterSearch.toLowerCase())) {
+                            if (mFilterSearch != null && !mFilterSearch.equals("All Foods") && !thisRecipe.getIngredientListBlob().contains(mFilterSearch.toLowerCase())) {
                                 meetSearchCriteria = false;
                             }
                             if (mFavorites == true && !thisRecipe.isFavorite()) {
@@ -322,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                             mAdapter.notifyDataSetChanged();
                             }
                     };
-                task.execute();};
+                task.execute();}
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

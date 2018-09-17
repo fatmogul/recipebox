@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -34,6 +33,7 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
         ImageView editButton = convertView.findViewById(R.id.edit_ingredient_button);
 
         final Ingredient thisIngredient = getItem(position);
+        assert thisIngredient != null;
         String quantityString = Long.toString(thisIngredient.getQuantity());
 
 

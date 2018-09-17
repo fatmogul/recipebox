@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:id="@+id/detail_activity_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -14,13 +13,14 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context=".DetailActivity"
             android:paddingBottom="50dp">
 
             <ImageView
                 android:id="@+id/detail_image_view"
                 android:layout_width="match_parent"
+                android:contentDescription="@string/your_recipe_photo"
                 android:layout_height="200dp"
                 android:src="@drawable/ic_add_a_photo_grey_24dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -49,15 +49,16 @@
                     android:id="@+id/prep_time_holder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="0dp"
                     app:layout_constraintRight_toLeftOf="@id/cook_time_holder">
 
                     <TextView
                         android:id="@+id/prep_time_text_view_detail_screen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="10dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="10dp"
                         android:paddingTop="16dp"
                         android:text="@string/prep_time"
                         android:textStyle="bold"
@@ -68,7 +69,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="16dp"
-                        android:text="30 minutes"
                         app:layout_constraintLeft_toRightOf="@id/prep_time_text_view_detail_screen" />
 
                 </android.support.constraint.ConstraintLayout>
@@ -77,14 +77,15 @@
                     android:id="@+id/cook_time_holder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
                     app:layout_constraintLeft_toRightOf="@id/prep_time_holder">
 
                     <TextView
-                        android:id="@+id/cook_time_text_view_detail_screen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="0dp"
                         android:paddingTop="16dp"
                         android:text="@string/cook_time"
                         android:textStyle="bold"
@@ -94,9 +95,9 @@
                         android:id="@+id/cook_time_variable_text_view_detail_screen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="0dp"
                         android:paddingTop="16dp"
-                        android:text="25 minutes"
                         app:layout_constraintRight_toLeftOf="@id/cook_time_variable_text_view_detail_screen" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
@@ -115,7 +116,8 @@
                     android:id="@+id/servings_label_detail_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="0dp"
                     android:text="@string/serves"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -126,7 +128,6 @@
                     android:id="@+id/servings_variable_detail_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="19"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/servings_label_detail_view"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -159,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
-                android:text="Directions"
+                android:text="@string/directions"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -194,7 +195,7 @@
             android:id="@+id/detail_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit"
+            android:text="@string/edit"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/detail_share_button"
             app:layout_constraintTop_toTopOf="parent"
@@ -204,7 +205,7 @@
             android:id="@+id/detail_share_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share"
+            android:text="@string/share"
             app:layout_constraintLeft_toRightOf="@id/detail_edit_button"
             app:layout_constraintRight_toLeftOf="@id/detail_favorite_button"
             app:layout_constraintTop_toTopOf="parent"
@@ -214,7 +215,7 @@
             android:id="@+id/detail_favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Favorite"
+            android:text="@string/favorite"
             app:layout_constraintLeft_toRightOf="@id/detail_share_button"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"

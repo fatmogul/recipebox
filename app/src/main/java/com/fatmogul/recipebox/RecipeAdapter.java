@@ -1,13 +1,10 @@
 package com.fatmogul.recipebox;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
 public class RecipeAdapter extends ArrayAdapter<Recipe> {
     
@@ -29,8 +26,9 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
     }
 
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.recipe, parent, false);
         }
@@ -43,6 +41,7 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
         final Recipe recipe = getItem(position);
 
+        assert recipe != null;
         if(recipe.getPhotoUrl() != null){
             recipeImageView.setVisibility(View.VISIBLE);
             Picasso.get().load(Uri.parse(recipe.getPhotoUrl())).fit().centerCrop().into(recipeImageView);
@@ -51,9 +50,9 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
             recipeImageView.setVisibility(View.GONE);
         }
         titleTextView.setText(recipe.getTitle());
-        prepTimeTextView.setText(Long.toString(recipe.getPrepTime()) + " minutes");
-        cookTimeTextView.setText(Long.toString(recipe.getCookTime()) + " minutes");
-        servingsView.setText(Long.toString(recipe.getServings()));
+        prepTimeTextView.setText(String.format(getContext().getResources().getString(R.string.minutes_display),Long.toString(recipe.getPrepTime())));
+        cookTimeTextView.setText(String.format(getContext().getResources().getString(R.string.minutes_display),Long.toString(recipe.getCookTime())));
+        servingsView.setText(String.format(Locale.getDefault(), "%d", recipe.getServings()));
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

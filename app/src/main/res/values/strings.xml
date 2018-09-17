@@ -31,6 +31,23 @@
         <item>All Recipes</item>
         <item>Favorites</item>
     </string-array>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="remove_ingredient_button">Remove Ingredient Button</string>
+    <string name="edit_ingredient_button">Edit Ingredient Button</string>
+    <string name="your_recipe_photo">Your Recipe Photo</string>
+    <string name="add_remove_favorites_button">Add/Remove Favorites Button</string>
+    <string name="share_recipe_button">Share Recipe Button</string>
+    <string name="remove_recipe_direction_button">Remove Recipe Direction Button</string>
+    <string name="edit_recipe_direction_button">Edit Recipe Direction Button</string>
+    <string name="app_title_name">RecipeBox</string>
+    <string name="add_ingredient">Add Ingredient</string>
+    <string name="add_direction">Add Direction</string>
+    <string name="search_by_ingredient">Search by Ingredient</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="edit">Edit</string>
+    <string name="share">Share</string>
+    <string name="favorite">Favorite</string>
+    <string name="qty">Qty</string>
+    <string name="measurement_label">m.</string>
+    <string name="ingredient_name">Ingredient Name</string>
+    <string name="minutes_display">%1$s minutes</string>
 </resources>

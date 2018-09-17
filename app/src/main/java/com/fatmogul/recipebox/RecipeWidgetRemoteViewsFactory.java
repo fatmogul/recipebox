@@ -1,23 +1,14 @@
 package com.fatmogul.recipebox;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Binder;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,11 +16,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RecipeWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-private Context mContext;
-private int appWidgetId;
+private final Context mContext;
+private final int appWidgetId;
 private ArrayList<Recipe> mRecipes;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRecipeDatabaseReference;
@@ -49,8 +41,8 @@ private ArrayList<Recipe> mRecipes;
     @Override
     public void onCreate() {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = mFirebaseAuth.getInstance();
-        mUserId = mFirebaseAuth.getCurrentUser().getUid();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserId = Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid();
         mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
         mRecipeDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -84,15 +76,6 @@ private ArrayList<Recipe> mRecipes;
             return 0;
         }
     }
-    //TODO: make sure data is validated appropriately
-    //todo: make a giant text field of all fields for the search function to use
-    //todo: navigation using a d-pad
-    //todo: content descriptions
-    //todo: strings in strings.xml
-    //todo: ensure rtl
-    //todo: make sure that an appbar is included
-    //todo: set up the install release gradle task
-    //todo: set up signing configuration
 
     @Override
     public RemoteViews getViewAt(int position) {
@@ -102,7 +85,7 @@ private ArrayList<Recipe> mRecipes;
         row.setTextViewText(R.id.widget_recipe_name_text_view, mRecipes.get(position).getTitle());
 
         Intent intent=new Intent();
-        intent.putExtra("recipe",mRecipes.get(position));
+        intent.putExtra("recipe", mRecipes.get(position));
         intent.putParcelableArrayListExtra("ingredients",mRecipes.get(position).getIngredients());
         intent.putParcelableArrayListExtra("directions",mRecipes.get(position).getDirections());
 

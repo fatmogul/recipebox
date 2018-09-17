@@ -3,8 +3,9 @@
     android:id="@+id/widget_recipe_name_text_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="left"
-    android:paddingLeft="5dp"
+    android:gravity="start"
+    android:paddingStart="5dp"
+    android:paddingEnd="0dp"
 
     android:orientation="vertical"
     android:textSize="16sp" />

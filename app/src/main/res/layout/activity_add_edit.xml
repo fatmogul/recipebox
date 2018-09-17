@@ -8,7 +8,6 @@
     app:layout_constraintTop_toTopOf="parent">
 
     <ScrollView
-        android:id="@+id/add_edit_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/save_delete_cancel_buttons"
@@ -71,14 +70,14 @@
                 app:layout_constraintTop_toBottomOf="@id/photo_buttons_frame">
 
                 <TextView
-                    android:id="@+id/recipe_title_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:paddingBottom="10dp"
+                    android:paddingStart="0dp"
                     android:paddingEnd="20dp"
-                    android:paddingRight="20dp"
                     android:text="@string/recipe_name"
                     android:textSize="20sp"
+                    android:labelFor="@id/recipe_title_edit_text"
                     app:layout_constraintBottom_toBottomOf="@id/recipe_title_edit_text"
                     app:layout_constraintRight_toLeftOf="@id/recipe_title_edit_text" />
 
@@ -91,11 +90,11 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/favorites_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
-                    android:paddingRight="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="0dp"
                     android:text="@string/add_to_favorites"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="@id/favorites_check_box"
@@ -110,12 +109,11 @@
                     app:layout_constraintTop_toBottomOf="@id/recipe_title_edit_text" />
 
                 <TextView
-                    android:id="@+id/prep_time_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:paddingBottom="10dp"
                     android:paddingEnd="20dp"
-                    android:paddingRight="20dp"
+                    android:paddingStart="0dp"
                     android:text="@string/prep_time"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="@id/prep_time_edit_text"
@@ -132,12 +130,11 @@
 
 
                 <TextView
-                    android:id="@+id/cook_time_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:paddingBottom="10dp"
                     android:paddingEnd="20dp"
-                    android:paddingRight="20dp"
+                    android:paddingStart="0dp"
                     android:text="@string/cook_time"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="@id/cook_time_edit_text"
@@ -153,14 +150,14 @@
                     app:layout_constraintTop_toBottomOf="@id/prep_time_edit_text" />
 
                 <TextView
-                    android:id="@+id/servings_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:paddingBottom="10dp"
                     android:paddingEnd="20dp"
-                    android:paddingRight="20dp"
+                    android:paddingStart="0dp"
                     android:text="@string/serves"
                     android:textSize="20sp"
+                    android:labelFor="@id/servings_edit_text"
                     app:layout_constraintBottom_toBottomOf="@id/servings_edit_text"
                     app:layout_constraintRight_toLeftOf="@id/servings_edit_text" />
 
@@ -200,7 +197,7 @@
                 android:id="@+id/add_ingredient_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Ingredient"
+                android:text="@string/add_ingredient"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ingredients_list_view" />
@@ -210,7 +207,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
-                android:text="Directions"
+                android:text="@string/directions"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -232,7 +229,7 @@
                 android:id="@+id/add_direction_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Direction"
+                android:text="@string/add_direction"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/directions_list_view" />

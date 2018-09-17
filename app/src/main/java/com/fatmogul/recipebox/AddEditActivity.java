@@ -9,9 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,12 +34,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 public class AddEditActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
-    private static ArrayList mIngredients;
+    private static ArrayList<Ingredient> mIngredients;
     private static ArrayList mDirections;
     private static IngredientAdapter mIngredientAdapter;
     private static DirectionAdapter mDirectionAdapter;
@@ -69,6 +67,7 @@ public class AddEditActivity extends AppCompatActivity {
     private Recipe mRecipe;
     private String mRecipeId;
     private StorageReference mRecipePhotoStorageReference;
+    private String mIngredientBlobList;
 
     public static void removeIngredient(int position) {
         if (mIngredients.size() == 1) {
@@ -99,7 +98,7 @@ public class AddEditActivity extends AppCompatActivity {
                         if (!directionBox.getText().toString().equals("")) {
                             mDirections.set(position, new Direction(directionBox.getText().toString()));
                             Direction firstDirection = (Direction) mDirections.get(0);
-                            if (mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")) {
+                            if (firstDirection.getDirectionText().equals("None")) {
                                 mDirections.remove(0);
                             }
                             mDirectionAdapter.notifyDataSetChanged();
@@ -117,7 +116,7 @@ public class AddEditActivity extends AppCompatActivity {
         final EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
         final EditText measurementBox = dialogBox.findViewById(R.id.measurement_add_edit_text);
         final EditText ingredientBox = dialogBox.findViewById(R.id.ingredient_add_edit_text);
-        Ingredient thisIngredient = (Ingredient) mIngredients.get(position);
+        Ingredient thisIngredient = mIngredients.get(position);
         qtyBox.setText(String.valueOf(thisIngredient.getQuantity()));
         measurementBox.setText(thisIngredient.getMeasurement());
         ingredientBox.setText(thisIngredient.getIngredient());
@@ -132,8 +131,8 @@ public class AddEditActivity extends AppCompatActivity {
 
                             mIngredients.set(position, new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                     measurementBox.getText().toString(), ingredientBox.getText().toString()));
-                            Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
-                            if (mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")) {
+                            Ingredient firstIngredient = mIngredients.get(0);
+                            if (firstIngredient.getIngredient().equals("None")) {
                                 mIngredients.remove(0);
                             }
                             mIngredientAdapter.notifyDataSetChanged();
@@ -174,8 +173,8 @@ public class AddEditActivity extends AppCompatActivity {
 
                             mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                     measurementBox.getText().toString(), ingredientBox.getText().toString()));
-                            Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
-                            if (mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")) {
+                            Ingredient firstIngredient = mIngredients.get(0);
+                            if (firstIngredient.getIngredient().equals("None")) {
                                 mIngredients.remove(0);
                             }
                             mIngredientAdapter.notifyDataSetChanged();
@@ -191,8 +190,8 @@ public class AddEditActivity extends AppCompatActivity {
 
                         mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                 measurementBox.getText().toString(), ingredientBox.getText().toString()));
-                        Ingredient firstIngredient = (Ingredient) mIngredients.get(0);
-                        if (mIngredients.size() > 0 && firstIngredient.getIngredient().equals("None")) {
+                        Ingredient firstIngredient = mIngredients.get(0);
+                        if (firstIngredient.getIngredient().equals("None")) {
                             mIngredients.remove(0);
                         }
                         mIngredientAdapter.notifyDataSetChanged();
@@ -215,7 +214,7 @@ public class AddEditActivity extends AppCompatActivity {
                         if (!directionEditText.getText().toString().equals("")) {
                             mDirections.add(new Direction(directionEditText.getText().toString()));
                             Direction firstDirection = (Direction) mDirections.get(0);
-                            if (mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")) {
+                            if (firstDirection.getDirectionText().equals("None")) {
                                 mDirections.remove(0);
                             }
                             mDirectionAdapter.notifyDataSetChanged();
@@ -227,7 +226,7 @@ public class AddEditActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         mDirections.add(new Direction(directionEditText.getText().toString()));
                         Direction firstDirection = (Direction) mDirections.get(0);
-                        if (mDirections.size() > 0 && firstDirection.getDirectionText().equals("None")) {
+                        if (firstDirection.getDirectionText().equals("None")) {
                             mDirections.remove(0);
                         }
                         mDirectionAdapter.notifyDataSetChanged();
@@ -259,6 +258,7 @@ public class AddEditActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
         mRecipeId = null;
+        mIngredientBlobList = null;
         if(mTaskId.equals("edit")){
             mRecipe = getIntent().getParcelableExtra("recipe");
             mDeleteButton.setVisibility(View.VISIBLE);
@@ -346,27 +346,30 @@ public class AddEditActivity extends AppCompatActivity {
                 if (mPhotoDownloadUri != null) {
                     photoUri = mPhotoDownloadUri.toString();
                 }
+                for(Ingredient ingredient : mIngredients){
+                    mIngredientBlobList = mIngredientBlobList + ingredient.getIngredient();
+                }
 
                 boolean favoriteSelection = mFavoritesCheckBox.isChecked();
                 List missingData = new ArrayList();
                 recipeTitle = mRecipeTitleEditText.getText().toString();
                 if (recipeTitle.equals("")) {
-                    missingData.add(R.string.recipe_name);
+                    missingData.add(getString(R.string.recipe_name));
                 }
                 try {
                     prepTime = Long.parseLong(mPrepTimeEditEdit.getText().toString());
                 } catch (Exception e) {
-                    missingData.add(R.string.prep_time);
+                    missingData.add(getString(R.string.prep_time));
                 }
                 try {
                     cookTime = Long.parseLong(mCookTimeEditText.getText().toString());
                 } catch (Exception e) {
-                    missingData.add(R.string.cook_time);
+                    missingData.add(getString(R.string.cook_time));
                 }
                 try {
                     servings = Long.parseLong(mServesEditText.getText().toString());
                 } catch (Exception e) {
-                    missingData.add(R.string.serves);
+                    missingData.add(getString(R.string.serves));
                 }
                 if (missingData.size() > 0) {
                     String toastMessage = getString(R.string.add_edit_save_error_toast_message);
@@ -385,7 +388,8 @@ public class AddEditActivity extends AppCompatActivity {
                             photoUri,
                             favoriteSelection,
                             mRecipeId,
-                            mUserId);
+                            mUserId,
+                            mIngredientBlobList);
                     if (mTaskId.equals("new")) {
                         mRecipeDatabaseReference.push().setValue(recipe);
                         finish();
@@ -451,6 +455,7 @@ public class AddEditActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Uri selectedImageUri = data.getData();
+            assert selectedImageUri != null;
             final StorageReference photoRef = mRecipePhotoStorageReference.child(selectedImageUri.getLastPathSegment());
             try {
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
@@ -462,7 +467,7 @@ public class AddEditActivity extends AppCompatActivity {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                         if (!task.isSuccessful()) {
-                            throw task.getException();
+                            throw Objects.requireNonNull(task.getException());
                         }
 
                         // Continue with the task to get the download URL

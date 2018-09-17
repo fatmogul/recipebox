@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="3dp"
@@ -13,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/back"
-        android:elevation="6dp">
+        android:elevation="6dp"
+        tools:targetApi="lollipop">
 
         <FrameLayout
             android:id="@+id/recipeImageFrame"
@@ -26,7 +28,7 @@
             >
 
             <ImageView
-
+                android:contentDescription="@string/your_recipe_photo"
                 android:id="@+id/recipeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -37,9 +39,10 @@
             android:id="@+id/favorite_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/add_remove_favorites_button"
             android:padding="16dp"
             android:paddingEnd="20dp"
-            android:paddingRight="20dp"
+            android:paddingStart="0dp"
             android:src="@drawable/ic_favorite_border_grey_24dp"
             app:layout_constraintLeft_toLeftOf="@id/recipe_frame"
             app:layout_constraintTop_toBottomOf="@id/recipeImageFrame" />
@@ -60,11 +63,12 @@
 
         <ImageView
             android:id="@+id/share_icon"
+            android:contentDescription="@string/share_recipe_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:paddingLeft="20dp"
             android:paddingStart="20dp"
+            android:paddingEnd="0dp"
             android:src="@drawable/ic_share_black_24dp"
             app:layout_constraintRight_toRightOf="@id/recipe_frame"
             app:layout_constraintTop_toBottomOf="@id/recipeImageFrame" />
@@ -73,10 +77,11 @@
             android:id="@+id/prep_time_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Prep Time:"
+            android:text="@string/prep_time"
             android:textStyle="bold"
             android:textSize="12sp"
-            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
             app:layout_constraintLeft_toLeftOf="@id/recipeImageFrame"
             app:layout_constraintTop_toBottomOf="@+id/favorite_icon" />
 
@@ -84,7 +89,8 @@
             android:id="@+id/prepTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
 
             android:textSize="12sp"
             app:layout_constraintLeft_toRightOf="@id/prep_time_label"
@@ -94,10 +100,11 @@
             android:id="@+id/cook_time_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cook Time:"
+            android:text="@string/cook_time"
 
             android:textSize="12sp"
-            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="@id/recipeImageFrame"
             app:layout_constraintTop_toBottomOf="@id/prep_time_label" />
@@ -106,7 +113,8 @@
             android:id="@+id/cookTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
 
             android:textSize="12sp"
             android:paddingBottom="8dp"
@@ -117,11 +125,12 @@
             android:id="@+id/servings_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Serves:"
+            android:text="@string/serves"
 
             android:textSize="12sp"
             android:textStyle="bold"
-            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="0dp"
             app:layout_constraintRight_toRightOf="@id/recipeImageFrame"
             app:layout_constraintTop_toTopOf="@id/prep_time_label" />
 
@@ -129,7 +138,8 @@
             android:id="@+id/servingsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="0dp"
 
             android:textSize="12sp"
             android:paddingBottom="8dp"

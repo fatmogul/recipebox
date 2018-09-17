@@ -18,11 +18,12 @@ public class Recipe implements Parcelable{
     private boolean favorite;
     private String recipeId;
     private String userId;
+    private String ingredientListBlob;
 
     public Recipe() {
     }
 
-    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, ArrayList<Ingredient> ingredients, ArrayList<Direction> directions, String photoUrl, boolean favorite, String recipeId, String userId){
+    public Recipe(String title, String titleLower, long prepTime, long cookTime, long servings, ArrayList<Ingredient> ingredients, ArrayList<Direction> directions, String photoUrl, boolean favorite, String recipeId, String userId, String ingredientListBlob){
         this.title = title;
         this.titleLower = titleLower.toLowerCase();
         this.prepTime = prepTime;
@@ -34,6 +35,7 @@ public class Recipe implements Parcelable{
         this.favorite = favorite;
         this.userId = userId;
         this.recipeId = recipeId;
+        this.ingredientListBlob = ingredientListBlob;
     }
 
     protected Recipe(Parcel in) {
@@ -161,4 +163,12 @@ public class Recipe implements Parcelable{
         dest.writeString(recipeId);
         dest.writeString(userId);
         }
+
+    public String getIngredientListBlob() {
+        return ingredientListBlob;
+    }
+
+    public void setIngredientListBlob(String ingredientListBlob) {
+        this.ingredientListBlob = ingredientListBlob;
+    }
 }
