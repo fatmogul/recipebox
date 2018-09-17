@@ -93,7 +93,7 @@ private ArrayList<Recipe> mRecipes;
     //todo: make sure that an appbar is included
     //todo: set up the install release gradle task
     //todo: set up signing configuration
-    
+
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews row=new RemoteViews(mContext.getPackageName(),

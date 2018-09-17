@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFilterSearch = filterSpinner.getItemAtPosition(position).toString();
-                mAdapter.clear();
+                mRecipes.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
             }
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mFavorites = false;
                 }
-                mAdapter.clear();
+                mRecipes.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
             }
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 menu.findItem(R.id.search_button).collapseActionView();
                 mSearchQueryChanged = false;
                 mSearchTerm = null;
-                mAdapter.clear();
+                mRecipes.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
 
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String queryText) {
                 if (mSearchQueryChanged == true) {
                     mSearchQueryChanged = false;
-                    mAdapter.clear();
+                    mRecipes.clear();
                     detachDatabaseReadListener();
                     attachDatabaseReadListener();
                     searchView.clearFocus();
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignedOutCleanup() {
         mUserId = null;
-        mAdapter.clear();
+        mRecipes.clear();
         detachDatabaseReadListener();
     }
 
@@ -317,9 +317,10 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Object o) {
-                            mAdapter.notifyDataSetChanged();
                             super.onPostExecute(o);
-                        }
+
+                            mAdapter.notifyDataSetChanged();
+                            }
                     };
                 task.execute();};
 
@@ -328,7 +329,9 @@ public class MainActivity extends AppCompatActivity {
 
                     int index = mKeys.indexOf(dataSnapshot.getKey());
                     mRecipes.remove(mRecipes.get(index));
-                    mRecipes.set(index,dataSnapshot.getValue(Recipe.class));
+                    mKeys.remove(index);
+                    mRecipes.add(index,dataSnapshot.getValue(Recipe.class));
+                    mKeys.add(index,dataSnapshot.getKey());
                     mAdapter.notifyDataSetChanged();
                 }
 
