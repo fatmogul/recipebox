@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -148,12 +149,15 @@ public class AddEditActivity extends AppCompatActivity {
     private StorageReference mRecipePhotoStorageReference;
     private String mIngredientBlobList;
 
+    private static String INGREDIENTS = "ingredients";
+    private static String DIRECTIONS = "directions";
+    private static String PHOTO_URI = "photoUriString";
     /*
     Simple module for removing an ingredient from the ingredients ArrayList and updating the adapter.
      */
     public static void removeIngredient(int position) {
         if (mIngredients.size() == 1) {
-            mIngredients.add(new Ingredient(0, null, "None"));
+            mIngredients.add(new Ingredient(0, null, Resources.getSystem().getString(R.string.none_loaded)));
         }
         mIngredients.remove(position);
         mIngredientAdapter.notifyDataSetChanged();
@@ -164,7 +168,7 @@ public class AddEditActivity extends AppCompatActivity {
      */
     public static void removeDirection(int position) {
         if (mDirections.size() == 1) {
-            mDirections.add(new Direction("None"));
+            mDirections.add(new Direction(Resources.getSystem().getString(R.string.none_loaded)));
         }
         mDirections.remove(position);
         mDirectionAdapter.notifyDataSetChanged();
@@ -179,22 +183,22 @@ public class AddEditActivity extends AppCompatActivity {
         Direction thisDirection = (Direction) mDirections.get(position);
         directionBox.setText(thisDirection.getDirectionText());
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Update Direction")
+                .setTitle(Resources.getSystem().getString(R.string.update_direction))
                 .setView(directionBox)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Resources.getSystem().getString(R.string.save), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!directionBox.getText().toString().equals("")) {
                             mDirections.set(position, new Direction(directionBox.getText().toString()));
                             Direction firstDirection = (Direction) mDirections.get(0);
-                            if (firstDirection.getDirectionText().equals("None")) {
+                            if (firstDirection.getDirectionText().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                                 mDirections.remove(0);
                             }
                             mDirectionAdapter.notifyDataSetChanged();
                         }
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)
                 .create();
         dialog.show();
     }
@@ -214,23 +218,23 @@ public class AddEditActivity extends AppCompatActivity {
         measurementBox.setText(thisIngredient.getMeasurement());
         ingredientBox.setText(thisIngredient.getIngredient());
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Update Ingredient")
+                .setTitle(Resources.getSystem().getString(R.string.update_ingredient))
                 .setView(dialogBox)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Resources.getSystem().getString(R.string.save), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!qtyBox.getText().toString().equals("") && !measurementBox.getText().toString().equals("") && !ingredientBox.toString().equals("")) {
                             mIngredients.set(position, new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                     measurementBox.getText().toString(), ingredientBox.getText().toString()));
                             Ingredient firstIngredient = mIngredients.get(0);
-                            if (firstIngredient.getIngredient().equals("None")) {
+                            if (firstIngredient.getIngredient().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                                 mIngredients.remove(0);
                             }
                             mIngredientAdapter.notifyDataSetChanged();
                         }
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)
                 .create();
         dialog.show();
     }
@@ -240,10 +244,10 @@ public class AddEditActivity extends AppCompatActivity {
     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("ingredients", mIngredients);
-        outState.putParcelableArrayList("directions", mDirections);
+        outState.putParcelableArrayList(INGREDIENTS, mIngredients);
+        outState.putParcelableArrayList(DIRECTIONS, mDirections);
         if (mPhotoDownloadUri != null) {
-            outState.putString("photoUriString", mPhotoDownloadUri.toString());
+            outState.putString(PHOTO_URI, mPhotoDownloadUri.toString());
         }
         super.onSaveInstanceState(outState);
     }
@@ -257,9 +261,9 @@ If the Add Ingredient button is pressed, it calls this module to open a dialog b
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
 
         AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
-                .setTitle("Add a new Ingredient")
+                .setTitle(Resources.getSystem().getString(R.string.add_ingredient))
                 .setView(dialogBox)
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Resources.getSystem().getString(R.string.done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
@@ -271,14 +275,14 @@ If the Add Ingredient button is pressed, it calls this module to open a dialog b
                             mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                     measurementBox.getText().toString(), ingredientBox.getText().toString()));
                             Ingredient firstIngredient = mIngredients.get(0);
-                            if (firstIngredient.getIngredient().equals("None")) {
+                            if (firstIngredient.getIngredient().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                                 mIngredients.remove(0);
                             }
                             mIngredientAdapter.notifyDataSetChanged();
                         }
                     }
                 })
-                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
+                .setNeutralButton(Resources.getSystem().getString(R.string.add_another), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
@@ -288,14 +292,14 @@ If the Add Ingredient button is pressed, it calls this module to open a dialog b
                         mIngredients.add(new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                 measurementBox.getText().toString(), ingredientBox.getText().toString()));
                         Ingredient firstIngredient = mIngredients.get(0);
-                        if (firstIngredient.getIngredient().equals("None")) {
+                        if (firstIngredient.getIngredient().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                             mIngredients.remove(0);
                         }
                         mIngredientAdapter.notifyDataSetChanged();
                         addIngredient();
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)
                 .create();
         dialog.show();
     }
@@ -307,34 +311,34 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
     public void addDirection() {
         final EditText directionEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
-                .setTitle("Add a new Direction")
+                .setTitle(Resources.getSystem().getString(R.string.add_direction))
                 .setView(directionEditText)
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Resources.getSystem().getString(R.string.done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!directionEditText.getText().toString().equals("")) {
                             mDirections.add(new Direction(directionEditText.getText().toString()));
                             Direction firstDirection = (Direction) mDirections.get(0);
-                            if (firstDirection.getDirectionText().equals("None")) {
+                            if (firstDirection.getDirectionText().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                                 mDirections.remove(0);
                             }
                             mDirectionAdapter.notifyDataSetChanged();
                         }
                     }
                 })
-                .setNeutralButton("Add another", new DialogInterface.OnClickListener() {
+                .setNeutralButton(Resources.getSystem().getString(R.string.add_another), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDirections.add(new Direction(directionEditText.getText().toString()));
                         Direction firstDirection = (Direction) mDirections.get(0);
-                        if (firstDirection.getDirectionText().equals("None")) {
+                        if (firstDirection.getDirectionText().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                             mDirections.remove(0);
                         }
                         mDirectionAdapter.notifyDataSetChanged();
                         addDirection();
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)
                 .create();
         dialog.show();
     }
@@ -354,14 +358,14 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
         mAddDirectionButton = findViewById(R.id.add_direction_button);
         mDeleteButton = findViewById(R.id.delete_recipe_button);
         mRecipeTitleEditText.clearFocus();
-        mUserId = getIntent().getStringExtra("userId");
-        mTaskId = getIntent().getStringExtra("taskId");
+        mUserId = getIntent().getStringExtra(MainActivity.USER_ID);
+        mTaskId = getIntent().getStringExtra(MainActivity.TASK_ID);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
         mRecipeId = null;
         mIngredientBlobList = null;
-        if (mTaskId.equals("edit")) {
-            mRecipe = getIntent().getParcelableExtra("recipe");
+        if (mTaskId.equals(Resources.getSystem().getString(R.string.edit))) {
+            mRecipe = getIntent().getParcelableExtra(MainActivity.RECIPE);
             mDeleteButton.setVisibility(View.VISIBLE);
             mRecipeId = mRecipe.getRecipeId();
             mFavoritesCheckBox.setChecked(mRecipe.isFavorite());
@@ -375,20 +379,20 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
             mServesEditText.setText(String.valueOf(mRecipe.getServings()));
 
         }
-        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
-        mRecipePhotoStorageReference = mFirebaseStorage.getReference().child("users/" + mUserId + "/photos");
+        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment));
+        mRecipePhotoStorageReference = mFirebaseStorage.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.photos_path_segment));
 
         mIngredientListView = findViewById(R.id.ingredients_list_view);
         if (savedInstanceState != null) {
-            mIngredients = savedInstanceState.getParcelableArrayList("ingredients");
+            mIngredients = savedInstanceState.getParcelableArrayList(INGREDIENTS);
             try {
-                mPhotoDownloadUri = Uri.parse(savedInstanceState.getString("photoUriString"));
+                mPhotoDownloadUri = Uri.parse(savedInstanceState.getString(PHOTO_URI));
             } catch (Exception e) {
                 mPhotoDownloadUri = null;
             }
         } else {
-            if (mTaskId.equals("edit")) {
-                mIngredients = getIntent().getParcelableArrayListExtra("ingredients");
+            if (mTaskId.equals(getString(R.string.edit))) {
+                mIngredients = getIntent().getParcelableArrayListExtra(INGREDIENTS);
             } else {
                 mIngredients = new ArrayList<>();
                 mIngredients.add(new Ingredient(0, null, getString(R.string.none_loaded)));
@@ -399,10 +403,10 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
 
         mDirectionsListView = findViewById(R.id.directions_list_view);
         if (savedInstanceState != null) {
-            mDirections = savedInstanceState.getParcelableArrayList("directions");
+            mDirections = savedInstanceState.getParcelableArrayList(DIRECTIONS);
         } else {
-            if (mTaskId.equals("edit")) {
-                mDirections = getIntent().getParcelableArrayListExtra("directions");
+            if (mTaskId.equals(getString(R.string.edit))) {
+                mDirections = getIntent().getParcelableArrayListExtra(DIRECTIONS);
             } else {
                 mDirections = new ArrayList<>();
                 mDirections.add(new Direction(getString(R.string.none_loaded)));
@@ -412,10 +416,10 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
         mDirectionsListView.setAdapter(mDirectionAdapter);
 
 
-        if (mTaskId.equals("new")) {
-            setTitle("Add New Recipe");
+        if (mTaskId.equals(getString(R.string.new_string))) {
+            setTitle(R.string.add_recipe);
         } else {
-            setTitle("Edit " + mRecipe.getTitle());
+            setTitle(R.string.edit + R.string.blank_space + mRecipe.getTitle());
         }
         mPhotoPickerButton = findViewById(R.id.photo_picker_button);
         mSaveButton = findViewById(R.id.save_recipe_button);
@@ -433,7 +437,7 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.complete_action)), RC_PHOTO_PICKER);
             }
         });
 
@@ -492,16 +496,16 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
                             mRecipeId,
                             mUserId,
                             mIngredientBlobList);
-                    if (mTaskId.equals("new")) {
+                    if (mTaskId.equals(getString(R.string.new_string))) {
                         mRecipeDatabaseReference.push().setValue(recipe);
                         finish();
-                    } else if (mTaskId.equals("edit")) {
-                        DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
+                    } else if (mTaskId.equals(R.string.edit)) {
+                        DatabaseReference rf = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment) + mRecipe.getRecipeId());
                         rf.setValue(recipe);
                         Intent intent = new Intent(AddEditActivity.this, DetailActivity.class);
-                        intent.putExtra("recipe", recipe);
-                        intent.putParcelableArrayListExtra("ingredients", recipe.getIngredients());
-                        intent.putParcelableArrayListExtra("directions", recipe.getDirections());
+                        intent.putExtra(MainActivity.RECIPE, recipe);
+                        intent.putParcelableArrayListExtra(INGREDIENTS, recipe.getIngredients());
+                        intent.putParcelableArrayListExtra(DIRECTIONS, recipe.getDirections());
                         startActivity(intent);
                     }
 
@@ -512,12 +516,12 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
             @Override
             public void onClick(View v) {
                 AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
-                        .setTitle("Are you sure you want to delete " + mRecipe.getTitle() + "?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(getString(R.string.are_you_sure) + mRecipe.getTitle() + getString(R.string.question_mark))
+                        .setPositiveButton(getString(R.string.affirmative), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
+                                        DatabaseReference rf = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment) + mRecipe.getRecipeId());
                                         rf.removeValue();
                                         Intent intent = new Intent(AddEditActivity.this, MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -526,7 +530,7 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
                                     }
                                 }
                         )
-                        .setNegativeButton("No", null)
+                        .setNegativeButton(getString(R.string.no_string), null)
                         .create();
                 dialog.show();
             }
@@ -574,7 +578,6 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
                         if (!task.isSuccessful()) {
                             throw Objects.requireNonNull(task.getException());
                         }
-
                         // Continue with the task to get the download URL
                         return photoRef.getDownloadUrl();
                     }
@@ -584,17 +587,14 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
                         if (task.isSuccessful()) {
                             mPhotoDownloadUri = task.getResult();
                             setPicture();
-
                         } else {
-                            Toast.makeText(getApplicationContext(), "Photo Upload Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.photo_upload_failed, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
     }
 
@@ -607,6 +607,5 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
             mPhotoPickerButton.setText(R.string.add_photo);
             mClearButton.setVisibility(View.GONE);
         }
-
     }
 }

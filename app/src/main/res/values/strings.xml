@@ -50,4 +50,20 @@
     <string name="measurement_label">m.</string>
     <string name="ingredient_name">Ingredient Name</string>
     <string name="minutes_display">%1$s minutes</string>
+    <string name="update_direction">Update Direction</string>
+    <string name="update_ingredient">Update Ingredient</string>
+    <string name="done">Done</string>
+    <string name="add_another">Add another</string>
+    <string name="users_path_segment">users/</string>
+    <string name="recipes_path_segment">/recipes</string>
+    <string name="photos_path_segment">/photos</string>
+    <string name="new_string">new</string>
+    <string name="add_recipe">Add New Recipe</string>
+    <string name="blank_space"> </string>
+    <string name="complete_action">Complete action using</string>
+    <string name="are_you_sure">Are you sure you want to delete</string>
+    <string name="affirmative">Yes</string>
+    <string name="question_mark">\?</string>
+    <string name="no_string">No</string>
+    <string name="photo_upload_failed">Photo Upload Failed</string>
 </resources>

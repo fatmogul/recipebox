@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     private String mFilterSearch;
     private boolean mFavorites;
 
+    public static String USER_ID = "userId";
+    public static String TASK_ID = "taskId";
+    public static String RECIPE = "recipe";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
