@@ -36,6 +36,85 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+This activity serves the dual purpose of working as a screen for adding a new recipe as well as
+allowing to edit existing recipes.
+
+    @RC_PHOTO_PICKER
+        Provides the id for the photo picker process
+    @mIngredients
+        The ArrayList of all ingredients for the recipe.
+    @mDirections
+        The ArrayList of all directions for the recipe.
+    @mIngredientAdapter
+        The local IngredientAdapter for presenting ingredients in the activity.
+    @mDirectionAdapter
+         The local DirectionAdapter for presenting directions in the activity.
+    @mUserId
+        The local housing for the user's firebase auth id, which allows them to access their saved
+            recipes as well as connected photos.
+    @mPhotoDownloadUri
+        Holds the Uri for the Photo if it has been chosen.
+    @mTaskId
+        Captures the extra string from the intent to determine if this activity is intended to add a
+            new recipe or edit an existing one.
+        "new" if new Recipe
+        "edit" if existing.
+    @mPhotoPickerButton
+        The 'Add Photo' button on the activity_add_edit xml, which opens the photo picker intent
+    @mSaveButton
+        The Save Button on the activity_add_edit xml which saved the recipe to the firebase database
+    @mClearButton
+        The Clear Button which appears when a photo is showing in the photo image view.
+    @mDeleteButton
+        THe Delete Recipe button which allows to remove recipes from the firebase database.
+    @mImageView
+        The imageview which holds the image connected to the recipe, is populated from the database
+            when this is an already existing recipe.
+    @mRecipeTitleEditText
+        THe EditText field which holds the name of the recipe, is populated from the database when
+            this is an already existing recipe.
+    @mPrepTimeEditText
+        The EditText field which holds the Prep Time of the recipe, populated from the database when
+            this is an already existing recipe.
+    @mCookTimeEditText
+        The EditText field which holds the Cook Time of the recipe, populated from the database when
+            this is an already existing recipe.
+    @mServesEditText
+        The EditText field which holds the Servings of the recipe, populated from the database when
+            this is an already existing recipe.
+    @mFavoritesCheckBox
+        The CheckBox field which is checked if this recipe has been declared as a recipe.  Populated
+            from database if this is a previously existing recipe.
+    @mAddIngredientButton
+        The AddIngredient Button from the activity_add_edit xml which adds a new ingredient line
+            to the view.
+    @mAddDirectionButton
+        The AddDirection Button from the activity_add_edit xml which adds a new direction line to
+            the view.
+    @mIngredientListView
+        The ListView which is populated by the IngredientAdapter using the ingredient_display_list_view
+            xml.
+    @mDirectionListView
+        THe ListView which is populated by the DirectionAdapter using the direction_display_list_view
+            xml.
+    @mFirebaseDatabase
+        Holds the Firebase Database instance.
+    @mFirebaseStorage
+        Holds the FIrebase Storage instance.
+    @mRecipeDatabaseReference
+        Holds the mFirebaseDatabase Reference to allow for changes to database.
+    @mRecipe
+        Holds the detail for the current Recipe, obtained from the intent if this is an existing recipe.
+    @mRecipeId
+        Holds the ID for the current Recipe, obtained from the intent if this is an existing recipe.
+    @mRecipePhotoStorageReference
+        Holds the storage reference for mFirebaseStorage to allow for changes to file storage.
+    @mIngredientBlogList
+        A simple string which populates the full list of ingredients to create a searchable object
+            for the main screen.
+ */
+
 public class AddEditActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
@@ -53,7 +132,7 @@ public class AddEditActivity extends AppCompatActivity {
     private Button mDeleteButton;
     private ImageView mImageView;
     private EditText mRecipeTitleEditText;
-    private EditText mPrepTimeEditEdit;
+    private EditText mPrepTimeEditText;
     private EditText mCookTimeEditText;
     private EditText mServesEditText;
     private CheckBox mFavoritesCheckBox;
@@ -69,6 +148,9 @@ public class AddEditActivity extends AppCompatActivity {
     private StorageReference mRecipePhotoStorageReference;
     private String mIngredientBlobList;
 
+    /*
+    Simple module for removing an ingredient from the ingredients ArrayList and updating the adapter.
+     */
     public static void removeIngredient(int position) {
         if (mIngredients.size() == 1) {
             mIngredients.add(new Ingredient(0, null, "None"));
@@ -77,6 +159,9 @@ public class AddEditActivity extends AppCompatActivity {
         mIngredientAdapter.notifyDataSetChanged();
     }
 
+    /*
+    Simple module for removing a direction from the directions ArrayList and updating the adapter
+     */
     public static void removeDirection(int position) {
         if (mDirections.size() == 1) {
             mDirections.add(new Direction("None"));
@@ -85,6 +170,10 @@ public class AddEditActivity extends AppCompatActivity {
         mDirectionAdapter.notifyDataSetChanged();
     }
 
+    /*
+    Module which creates a dialog box for the purposes of updating a Direction when the edit button
+        is clicked.
+     */
     public static void updateDirection(final int position, Activity context) {
         final EditText directionBox = new EditText(context);
         Direction thisDirection = (Direction) mDirections.get(position);
@@ -110,6 +199,10 @@ public class AddEditActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /*
+    Module which creates a dialog box for the purposes of updating an Ingredient when the edit button
+        is clicked.
+    */
     public static void updateIngredient(final int position, Activity context) {
         LayoutInflater inflater = context.getLayoutInflater();
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
@@ -127,8 +220,6 @@ public class AddEditActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!qtyBox.getText().toString().equals("") && !measurementBox.getText().toString().equals("") && !ingredientBox.toString().equals("")) {
-
-
                             mIngredients.set(position, new Ingredient(Long.parseLong(qtyBox.getText().toString()),
                                     measurementBox.getText().toString(), ingredientBox.getText().toString()));
                             Ingredient firstIngredient = mIngredients.get(0);
@@ -144,6 +235,9 @@ public class AddEditActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /*
+        onSaveInstanceState which puts the ingredients and directions ArrayLists into memory, as well as the mPhotoDownloadUri if available.
+    */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("ingredients", mIngredients);
@@ -154,8 +248,11 @@ public class AddEditActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+/*
+If the Add Ingredient button is pressed, it calls this module to open a dialog box to collect the
+    data for the new ingredient.
+ */
     public void addIngredient() {
-
         LayoutInflater inflater = getLayoutInflater();
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
 
@@ -203,6 +300,10 @@ public class AddEditActivity extends AppCompatActivity {
         dialog.show();
     }
 
+/*
+If the Add Direction button is pressed, it calls this module to open a dialog box to collect the
+    data for the new ingredient.
+ */
     public void addDirection() {
         final EditText directionEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
@@ -245,7 +346,7 @@ public class AddEditActivity extends AppCompatActivity {
 
         mImageView = findViewById(R.id.uploaded_photo_iv);
         mRecipeTitleEditText = findViewById(R.id.recipe_title_edit_text);
-        mPrepTimeEditEdit = findViewById(R.id.prep_time_edit_text);
+        mPrepTimeEditText = findViewById(R.id.prep_time_edit_text);
         mCookTimeEditText = findViewById(R.id.cook_time_edit_text);
         mServesEditText = findViewById(R.id.servings_edit_text);
         mFavoritesCheckBox = findViewById(R.id.favorites_check_box);
@@ -259,16 +360,17 @@ public class AddEditActivity extends AppCompatActivity {
         mFirebaseStorage = FirebaseStorage.getInstance();
         mRecipeId = null;
         mIngredientBlobList = null;
-        if(mTaskId.equals("edit")){
+        if (mTaskId.equals("edit")) {
             mRecipe = getIntent().getParcelableExtra("recipe");
             mDeleteButton.setVisibility(View.VISIBLE);
             mRecipeId = mRecipe.getRecipeId();
             mFavoritesCheckBox.setChecked(mRecipe.isFavorite());
-            try{
-            mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());}
-            catch(Exception e){}
+            try {
+                mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
+            } catch (Exception e) {
+            }
             mRecipeTitleEditText.setText(mRecipe.getTitle());
-            mPrepTimeEditEdit.setText(String.valueOf(mRecipe.getPrepTime()));
+            mPrepTimeEditText.setText(String.valueOf(mRecipe.getPrepTime()));
             mCookTimeEditText.setText(String.valueOf(mRecipe.getCookTime()));
             mServesEditText.setText(String.valueOf(mRecipe.getServings()));
 
@@ -346,7 +448,7 @@ public class AddEditActivity extends AppCompatActivity {
                 if (mPhotoDownloadUri != null) {
                     photoUri = mPhotoDownloadUri.toString();
                 }
-                for(Ingredient ingredient : mIngredients){
+                for (Ingredient ingredient : mIngredients) {
                     mIngredientBlobList = mIngredientBlobList + ingredient.getIngredient();
                 }
 
@@ -357,7 +459,7 @@ public class AddEditActivity extends AppCompatActivity {
                     missingData.add(getString(R.string.recipe_name));
                 }
                 try {
-                    prepTime = Long.parseLong(mPrepTimeEditEdit.getText().toString());
+                    prepTime = Long.parseLong(mPrepTimeEditText.getText().toString());
                 } catch (Exception e) {
                     missingData.add(getString(R.string.prep_time));
                 }
@@ -393,13 +495,13 @@ public class AddEditActivity extends AppCompatActivity {
                     if (mTaskId.equals("new")) {
                         mRecipeDatabaseReference.push().setValue(recipe);
                         finish();
-                    } else if (mTaskId.equals("edit")){
+                    } else if (mTaskId.equals("edit")) {
                         DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
                         rf.setValue(recipe);
-                        Intent intent = new Intent(AddEditActivity.this,DetailActivity.class);
-                        intent.putExtra("recipe",recipe);
-                        intent.putParcelableArrayListExtra("ingredients",recipe.getIngredients());
-                        intent.putParcelableArrayListExtra("directions",recipe.getDirections());
+                        Intent intent = new Intent(AddEditActivity.this, DetailActivity.class);
+                        intent.putExtra("recipe", recipe);
+                        intent.putParcelableArrayListExtra("ingredients", recipe.getIngredients());
+                        intent.putParcelableArrayListExtra("directions", recipe.getDirections());
                         startActivity(intent);
                     }
 
@@ -412,20 +514,23 @@ public class AddEditActivity extends AppCompatActivity {
                 AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
                         .setTitle("Are you sure you want to delete " + mRecipe.getTitle() + "?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
-                                rf.removeValue();
-                                Intent intent = new Intent(AddEditActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();}
-                            }
+                                        DatabaseReference rf = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes/" + mRecipe.getRecipeId());
+                                        rf.removeValue();
+                                        Intent intent = new Intent(AddEditActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
                         )
                         .setNegativeButton("No", null)
                         .create();
-                dialog.show();}});
+                dialog.show();
+            }
+        });
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mAddIngredientButton.setOnClickListener(new View.OnClickListener() {
