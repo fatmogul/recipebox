@@ -119,6 +119,9 @@ allowing to edit existing recipes.
 public class AddEditActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
+    public static String INGREDIENTS = "ingredients";
+    public static String DIRECTIONS = "directions";
+    public static String PHOTO_URI = "photoUriString";
     private static ArrayList<Ingredient> mIngredients;
     private static ArrayList mDirections;
     private static IngredientAdapter mIngredientAdapter;
@@ -149,9 +152,6 @@ public class AddEditActivity extends AppCompatActivity {
     private StorageReference mRecipePhotoStorageReference;
     private String mIngredientBlobList;
 
-    private static String INGREDIENTS = "ingredients";
-    private static String DIRECTIONS = "directions";
-    private static String PHOTO_URI = "photoUriString";
     /*
     Simple module for removing an ingredient from the ingredients ArrayList and updating the adapter.
      */
@@ -240,7 +240,7 @@ public class AddEditActivity extends AppCompatActivity {
     }
 
     /*
-        onSaveInstanceState which puts the ingredients and directions ArrayLists into memory, as well as the mPhotoDownloadUri if available.
+         save the ingredients and directions ArrayLists into memory, as well as the mPhotoDownloadUri if available.
     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -252,10 +252,10 @@ public class AddEditActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-/*
-If the Add Ingredient button is pressed, it calls this module to open a dialog box to collect the
-    data for the new ingredient.
- */
+    /*
+    If the Add Ingredient button is pressed, it calls this module to open a dialog box to collect the
+        data for the new ingredient.
+     */
     public void addIngredient() {
         LayoutInflater inflater = getLayoutInflater();
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
@@ -304,10 +304,10 @@ If the Add Ingredient button is pressed, it calls this module to open a dialog b
         dialog.show();
     }
 
-/*
-If the Add Direction button is pressed, it calls this module to open a dialog box to collect the
-    data for the new ingredient.
- */
+    /*
+    If the Add Direction button is pressed, it calls this module to open a dialog box to collect the
+        data for the new ingredient.
+     */
     public void addDirection() {
         final EditText directionEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
@@ -364,11 +364,20 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
         mFirebaseStorage = FirebaseStorage.getInstance();
         mRecipeId = null;
         mIngredientBlobList = null;
+        /*
+        The "Edit" taskId, which comes from the intent to this activity, designates that we are
+        editing an existing recipe, which causes the app to populate the fields with the existing
+        data vs the "new" taskId, which designates that this is a new recipe, which keeps all fields
+        empty.
+         */
         if (mTaskId.equals(Resources.getSystem().getString(R.string.edit))) {
+            setTitle(R.string.edit + R.string.blank_space + mRecipe.getTitle());
             mRecipe = getIntent().getParcelableExtra(MainActivity.RECIPE);
             mDeleteButton.setVisibility(View.VISIBLE);
             mRecipeId = mRecipe.getRecipeId();
             mFavoritesCheckBox.setChecked(mRecipe.isFavorite());
+            mIngredients = getIntent().getParcelableArrayListExtra(INGREDIENTS);
+            mDirections = getIntent().getParcelableArrayListExtra(DIRECTIONS);
             try {
                 mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             } catch (Exception e) {
@@ -377,50 +386,37 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
             mPrepTimeEditText.setText(String.valueOf(mRecipe.getPrepTime()));
             mCookTimeEditText.setText(String.valueOf(mRecipe.getCookTime()));
             mServesEditText.setText(String.valueOf(mRecipe.getServings()));
-
+        } else {
+            setTitle(R.string.add_recipe);
         }
-        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment));
-        mRecipePhotoStorageReference = mFirebaseStorage.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.photos_path_segment));
-
-        mIngredientListView = findViewById(R.id.ingredients_list_view);
         if (savedInstanceState != null) {
             mIngredients = savedInstanceState.getParcelableArrayList(INGREDIENTS);
+            mDirections = savedInstanceState.getParcelableArrayList(DIRECTIONS);
             try {
                 mPhotoDownloadUri = Uri.parse(savedInstanceState.getString(PHOTO_URI));
             } catch (Exception e) {
                 mPhotoDownloadUri = null;
             }
-        } else {
-            if (mTaskId.equals(getString(R.string.edit))) {
-                mIngredients = getIntent().getParcelableArrayListExtra(INGREDIENTS);
-            } else {
-                mIngredients = new ArrayList<>();
-                mIngredients.add(new Ingredient(0, null, getString(R.string.none_loaded)));
-            }
+        }
+        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment));
+        mRecipePhotoStorageReference = mFirebaseStorage.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.photos_path_segment));
+        mIngredientListView = findViewById(R.id.ingredients_list_view);
+
+        if (mIngredients.size() == 0) {
+            mIngredients = new ArrayList<>();
+            mIngredients.add(new Ingredient(0, null, getString(R.string.none_loaded)));
         }
         mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
         mIngredientListView.setAdapter(mIngredientAdapter);
 
         mDirectionsListView = findViewById(R.id.directions_list_view);
-        if (savedInstanceState != null) {
-            mDirections = savedInstanceState.getParcelableArrayList(DIRECTIONS);
-        } else {
-            if (mTaskId.equals(getString(R.string.edit))) {
-                mDirections = getIntent().getParcelableArrayListExtra(DIRECTIONS);
-            } else {
-                mDirections = new ArrayList<>();
-                mDirections.add(new Direction(getString(R.string.none_loaded)));
-            }
+        if (mDirections.size() == 0) {
+            mDirections = new ArrayList<>();
+            mDirections.add(new Direction(getString(R.string.none_loaded)));
         }
         mDirectionAdapter = new DirectionAdapter(this, R.layout.direction_display_list_view, mDirections);
         mDirectionsListView.setAdapter(mDirectionAdapter);
 
-
-        if (mTaskId.equals(getString(R.string.new_string))) {
-            setTitle(R.string.add_recipe);
-        } else {
-            setTitle(R.string.edit + R.string.blank_space + mRecipe.getTitle());
-        }
         mPhotoPickerButton = findViewById(R.id.photo_picker_button);
         mSaveButton = findViewById(R.id.save_recipe_button);
         mClearButton = findViewById(R.id.clear_button);
@@ -512,6 +508,7 @@ If the Add Direction button is pressed, it calls this module to open a dialog bo
                 }
             }
         });
+
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
