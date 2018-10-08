@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     public static String USER_ID = "userId";
     public static String TASK_ID = "taskId";
     public static String RECIPE = "recipe";
+    public static String INGREDIENTS = "ingredients";
+    public static String DIRECTIONS = "directions";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

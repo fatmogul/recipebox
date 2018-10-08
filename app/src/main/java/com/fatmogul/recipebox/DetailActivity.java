@@ -2,9 +2,9 @@ package com.fatmogul.recipebox;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,9 +19,41 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+/*
+    DetailActivity serves as the screen to view the greater details for the recipe, such as the
+        directions and the ingredients.
+
+    @mRecipe is the Recipe being viewed on the detail screen, obtained from the Intent which brings
+        you to the screen
+    @mIngredients is the ArrayList of INGREDIENTs received from the Intent which brings you to this
+        screen
+    @mDirections is the ArrayList of DIRECTIONs received from the Intent which brings you to this
+        screen
+    @mIngredientAdapter is the local custom IngredientAdapter for displaying the ingredients in this
+        view
+    @mDirectionAdapter is the local custom DirectionAdapter for displaying the directions in this
+        view
+    @mIngredientListView is the reference to the view which mIngredientAdapter populates
+    @mDirectionListView is the reference to the view which mDirectionAdapter populates
+    @mPrepTimeTextView is the TextView populated with the prepTime attribute of the Recipe
+    @mCookTimeTextView is the TextView populated with the cookTime attribute of the Recipe
+    @mServingsTextView is the TextView populated with the servings attribute of the Recipe
+    @mImageView is the ImageView populated with the image at the photoDownloadUri attribute of the
+        Recipe
+    @mRecipeTitleView is the TextView populated with the title attribute of the Recipe
+    @mPhotoDownloadUri is the local value for the photoDownloadUri attribute of the Recipe, made
+        global for DetailActivity for cases of state change
+
+    @mEditButton is the Edit Button displayed in the activity view, utilized for directing the
+        application to the AddEditActivity activity
+    @mShareButton is the Share Button displayed on the activity view, utilized for directing the
+        application to an intent for sharing the Recipe through outside applications.
+    @mFavoriteButton is the Favorite Button displayed in the activity view, populated by the
+    favorite attribute of the Recipe.
+ */
 public class DetailActivity extends AppCompatActivity {
 
-private Recipe mRecipe;
+    private Recipe mRecipe;
 private ArrayList<Ingredient> mIngredients;
 private ArrayList<Direction> mDirections;
 private IngredientAdapter mIngredientAdapter;
@@ -35,7 +67,7 @@ private ImageView mImageView;
 private TextView mRecipeTitleView;
 private Uri mPhotoDownloadUri;
 
-private Button mEditButton;
+    private Button mEditButton;
 private Button mShareButton;
 private Button mFavoriteButton;
 
@@ -45,9 +77,9 @@ private Button mFavoriteButton;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        mRecipe = getIntent().getParcelableExtra("recipe");
-        mIngredients = getIntent().getParcelableArrayListExtra("ingredients");
-        mDirections = getIntent().getParcelableArrayListExtra("directions");
+        mRecipe = getIntent().getParcelableExtra(MainActivity.RECIPE);
+        mIngredients = getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS);
+        mDirections = getIntent().getParcelableArrayListExtra(MainActivity.DIRECTIONS);
         setTitle(mRecipe.getTitle());
 
         mIngredientListView = findViewById(R.id.ingredients_detail_list_view);
@@ -70,7 +102,7 @@ private Button mFavoriteButton;
         mServingsTextView.setText(String.valueOf(mRecipe.getServings()));
         mRecipeTitleView.setText(mRecipe.getTitle());
         try{
-        mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
+            mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(mImageView);
             mImageView.setVisibility(View.VISIBLE);
         } catch (Exception e){
@@ -93,12 +125,12 @@ private Button mFavoriteButton;
                     positionCounter += 1;
                     directionText = directionText + "\n" + String.valueOf(positionCounter) + ". " + direction.getDirectionText();
                 }
-                String tempText = mRecipe.getTitle() +
-                        "\nPrep Time: " + mRecipe.getPrepTime() +
-                        "\nCook Time: " + mRecipe.getCookTime() +
-                        "\nServes: " + mRecipe.getServings() +
-                        "\nIngredients: " + ingredientText +
-                        "\nDirections: " + directionText;
+                String tempText = mRecipe.getTitle() + "\n" +
+                        String.format(getString(R.string.prep_time_share_string), Long.toString(mRecipe.getPrepTime())) + "\n" +
+                        String.format(getString(R.string.cook_time_share_string), Long.toString(mRecipe.getCookTime())) + "\n" +
+                        String.format(getString(R.string.serves_share_string), Long.toString(mRecipe.getServings())) + "\n" +
+                        String.format(getString(R.string.ingredients_share_string), ingredientText) + "\n" +
+                        String.format(getString(R.string.directions_share_string), directionText) + "\n";
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_TEXT,tempText);
@@ -150,7 +182,7 @@ private Button mFavoriteButton;
                 startActivity(intent);
             }
         });
-            }
+    }
 
     @Override
     public void onBackPressed() {
