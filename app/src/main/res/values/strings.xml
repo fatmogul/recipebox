@@ -71,4 +71,9 @@
     <string name="serves_share_string">Serves: %1$s</string>
     <string name="ingredients_share_string">Ingredients: %1$s</string>
     <string name="directions_share_string">Directions: %1$s</string>
+    <string name="share_using">Share using</string>
+    <string name="recipe_unfavorited">%1$s unfavorited.</string>
+    <string name="recipe_favorited">%1$s favorited.</string>
+
+
 </resources>

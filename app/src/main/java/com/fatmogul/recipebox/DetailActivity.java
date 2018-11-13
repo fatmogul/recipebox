@@ -70,6 +70,15 @@ private Uri mPhotoDownloadUri;
     private Button mEditButton;
 private Button mShareButton;
 private Button mFavoriteButton;
+    public static String RF_USERS_PATH = "users/";
+    public static String RF_RECIPES_PATH = "/recipes";
+    public static String FAVORITE = "favorite";
+    public static String USERID = "userId";
+    public static String TASKID = "taskId";
+    public static String EDIT = "edit";
+    public static String RECIPE = "recipe";
+
+
 
 
     @Override
@@ -101,6 +110,9 @@ private Button mFavoriteButton;
         mCookTimeTextView.setText(String.valueOf(mRecipe.getCookTime()));
         mServingsTextView.setText(String.valueOf(mRecipe.getServings()));
         mRecipeTitleView.setText(mRecipe.getTitle());
+        /*
+        Retrieving the image from Firebase Storage and placing it in the ImageView
+         */
         try{
             mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(mImageView);
@@ -114,27 +126,30 @@ private Button mFavoriteButton;
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String ingredientText = "";
+/*
+Share button currently shares a limited text version of the recipe
+TODO: update share functionality to include image and html formatted text.
+ */
+                StringBuilder ingredientText = new StringBuilder();
                 for(Ingredient ingredient: mIngredients){
-                    ingredientText = ingredientText + "\n" + ingredient.getQuantity() + " " + ingredient.getMeasurement() + " " + ingredient.getIngredient();
+                    ingredientText.append("\n").append(ingredient.getQuantity()).append(" ").append(ingredient.getMeasurement()).append(" ").append(ingredient.getIngredient());
                 }
-                String directionText = "";
+                StringBuilder directionText = new StringBuilder();
                 int positionCounter = 0;
                 for(Direction direction : mDirections){
                     positionCounter += 1;
-                    directionText = directionText + "\n" + String.valueOf(positionCounter) + ". " + direction.getDirectionText();
+                    directionText.append("\n").append(String.valueOf(positionCounter)).append(". ").append(direction.getDirectionText());
                 }
                 String tempText = mRecipe.getTitle() + "\n" +
                         String.format(getString(R.string.prep_time_share_string), Long.toString(mRecipe.getPrepTime())) + "\n" +
                         String.format(getString(R.string.cook_time_share_string), Long.toString(mRecipe.getCookTime())) + "\n" +
                         String.format(getString(R.string.serves_share_string), Long.toString(mRecipe.getServings())) + "\n" +
-                        String.format(getString(R.string.ingredients_share_string), ingredientText) + "\n" +
-                        String.format(getString(R.string.directions_share_string), directionText) + "\n";
+                        String.format(getString(R.string.ingredients_share_string), ingredientText.toString()) + "\n" +
+                        String.format(getString(R.string.directions_share_string), directionText.toString()) + "\n";
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_TEXT,tempText);
-                Intent.createChooser(intent,"Share using");
+                Intent.createChooser(intent, getString(R.string.share_using));
                 startActivity(intent);
 
             }
@@ -153,16 +168,16 @@ private Button mFavoriteButton;
                 String toastText;
                 if(isFavorite){
                     isFavorite = false;
-                    toastText = mRecipe.getTitle() + " unfavorited.";
+                    toastText = String.format(getString(R.string.recipe_unfavorited), mRecipe.getTitle());
                     mFavoriteButton.setText(R.string.add_favorite);
                 }else{
                     isFavorite = true;
-                    toastText = mRecipe.getTitle() + " favorited.";
+                    toastText = String.format(getString(R.string.recipe_favorited), mRecipe.getTitle());
                     mFavoriteButton.setText(R.string.unfavorite);
                 }
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference rf = db.getReference().child("users/" + mRecipe.getUserId() + "/recipes");
-                rf.child(mRecipe.getRecipeId()).child("favorite").setValue(isFavorite);
+                DatabaseReference rf = db.getReference().child(RF_USERS_PATH + mRecipe.getUserId() + RF_RECIPES_PATH);
+                rf.child(mRecipe.getRecipeId()).child(FAVORITE).setValue(isFavorite);
                 mRecipe.setFavorite(isFavorite);
                 Toast.makeText(getApplicationContext(),toastText,Toast.LENGTH_SHORT).show();
             }
@@ -173,11 +188,11 @@ private Button mFavoriteButton;
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailActivity.this,AddEditActivity.class);
-                intent.putExtra("userId",mRecipe.getUserId());
-                intent.putExtra("taskId","edit");
-                intent.putExtra("recipe",mRecipe);
-                intent.putParcelableArrayListExtra("ingredients",mIngredients);
-                intent.putParcelableArrayListExtra("directions",mDirections);
+                intent.putExtra(USERID, mRecipe.getUserId());
+                intent.putExtra(TASKID, EDIT);
+                intent.putExtra(RECIPE, mRecipe);
+                intent.putParcelableArrayListExtra(AddEditActivity.INGREDIENTS, mIngredients);
+                intent.putParcelableArrayListExtra(AddEditActivity.DIRECTIONS, mDirections);
 
                 startActivity(intent);
             }
