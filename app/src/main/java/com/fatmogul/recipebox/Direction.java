@@ -3,16 +3,19 @@ package com.fatmogul.recipebox;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/*
+Custom class for directions to the recipe.
+ */
 public class Direction implements Parcelable {
     private String directionText;
 
     public Direction(){}
 
-    public Direction(String directionText) {
+    Direction(String directionText) {
         this.directionText = directionText;
     }
 
-    protected Direction(Parcel in) {
+    private Direction(Parcel in) {
         directionText = in.readString();
     }
 
@@ -28,7 +31,7 @@ public class Direction implements Parcelable {
         }
     };
 
-    public String getDirectionText() {
+    String getDirectionText() {
         return directionText;
     }
 

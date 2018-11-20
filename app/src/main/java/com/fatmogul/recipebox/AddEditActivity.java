@@ -37,6 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.fatmogul.recipebox.MainActivity.DIRECTIONS;
+import static com.fatmogul.recipebox.MainActivity.INGREDIENTS;
+import static com.fatmogul.recipebox.MainActivity.PHOTO_URI;
+
 /*
 This activity serves the dual purpose of working as a screen for adding a new recipe as well as
 allowing to edit existing recipes.
@@ -119,9 +123,6 @@ allowing to edit existing recipes.
 public class AddEditActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
-    public static String INGREDIENTS = "ingredients";
-    public static String DIRECTIONS = "directions";
-    public static String PHOTO_URI = "photoUriString";
     private static ArrayList<Ingredient> mIngredients;
     private static ArrayList mDirections;
     private static IngredientAdapter mIngredientAdapter;
@@ -449,7 +450,7 @@ public class AddEditActivity extends AppCompatActivity {
                     photoUri = mPhotoDownloadUri.toString();
                 }
                 for (Ingredient ingredient : mIngredients) {
-                    mIngredientBlobList = mIngredientBlobList + ingredient.getIngredient();
+                    mIngredientBlobList += ingredient.getIngredient();
                 }
 
                 boolean favoriteSelection = mFavoritesCheckBox.isChecked();
@@ -476,7 +477,7 @@ public class AddEditActivity extends AppCompatActivity {
                 if (missingData.size() > 0) {
                     String toastMessage = getString(R.string.add_edit_save_error_toast_message);
                     for (Object string : missingData) {
-                        toastMessage = toastMessage + "\n" + string.toString();
+                        toastMessage += "\n" + string.toString();
                     }
                     Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG).show();
                 } else {

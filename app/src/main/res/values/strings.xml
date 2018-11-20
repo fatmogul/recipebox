@@ -74,6 +74,10 @@
     <string name="share_using">Share using</string>
     <string name="recipe_unfavorited">%1$s unfavorited.</string>
     <string name="recipe_favorited">%1$s favorited.</string>
+    <string name="find_recipe">Find Recipe</string>
+    <string name="signed_in">Signed in</string>
+    <string name="sign_in_canceled">Sign in canceled</string>
+    <string name="all_foods">All Foods</string>
 
 
 </resources>

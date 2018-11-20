@@ -19,6 +19,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static com.fatmogul.recipebox.MainActivity.EDIT;
+import static com.fatmogul.recipebox.MainActivity.FAVORITE;
+import static com.fatmogul.recipebox.MainActivity.RECIPE;
+import static com.fatmogul.recipebox.MainActivity.TASK_ID;
+import static com.fatmogul.recipebox.MainActivity.USER_ID;
+
 /*
     DetailActivity serves as the screen to view the greater details for the recipe, such as the
         directions and the ingredients.
@@ -70,13 +76,7 @@ private Uri mPhotoDownloadUri;
     private Button mEditButton;
 private Button mShareButton;
 private Button mFavoriteButton;
-    public static String RF_USERS_PATH = "users/";
-    public static String RF_RECIPES_PATH = "/recipes";
-    public static String FAVORITE = "favorite";
-    public static String USERID = "userId";
-    public static String TASKID = "taskId";
-    public static String EDIT = "edit";
-    public static String RECIPE = "recipe";
+
 
 
 
@@ -86,7 +86,7 @@ private Button mFavoriteButton;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        mRecipe = getIntent().getParcelableExtra(MainActivity.RECIPE);
+        mRecipe = getIntent().getParcelableExtra(RECIPE);
         mIngredients = getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS);
         mDirections = getIntent().getParcelableArrayListExtra(MainActivity.DIRECTIONS);
         setTitle(mRecipe.getTitle());
@@ -176,7 +176,7 @@ TODO: update share functionality to include image and html formatted text.
                     mFavoriteButton.setText(R.string.unfavorite);
                 }
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference rf = db.getReference().child(RF_USERS_PATH + mRecipe.getUserId() + RF_RECIPES_PATH);
+                DatabaseReference rf = db.getReference().child(MainActivity.RF_USERS_PATH + mRecipe.getUserId() + MainActivity.RF_RECIPES_PATH);
                 rf.child(mRecipe.getRecipeId()).child(FAVORITE).setValue(isFavorite);
                 mRecipe.setFavorite(isFavorite);
                 Toast.makeText(getApplicationContext(),toastText,Toast.LENGTH_SHORT).show();
@@ -188,11 +188,11 @@ TODO: update share functionality to include image and html formatted text.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailActivity.this,AddEditActivity.class);
-                intent.putExtra(USERID, mRecipe.getUserId());
-                intent.putExtra(TASKID, EDIT);
+                intent.putExtra(USER_ID, mRecipe.getUserId());
+                intent.putExtra(TASK_ID, EDIT);
                 intent.putExtra(RECIPE, mRecipe);
-                intent.putParcelableArrayListExtra(AddEditActivity.INGREDIENTS, mIngredients);
-                intent.putParcelableArrayListExtra(AddEditActivity.DIRECTIONS, mDirections);
+                intent.putParcelableArrayListExtra(MainActivity.INGREDIENTS, mIngredients);
+                intent.putParcelableArrayListExtra(MainActivity.DIRECTIONS, mDirections);
 
                 startActivity(intent);
             }

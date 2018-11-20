@@ -12,10 +12,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/*
+Custom array adapter utilized in displaying specific ingredients within the ingredient_display_list_view.
+ */
 public class IngredientAdapter extends ArrayAdapter<Ingredient> {
 
 
-    public IngredientAdapter(@NonNull Context context, int resource, ArrayList<Ingredient> objects) {
+    IngredientAdapter(@NonNull Context context, int resource, ArrayList<Ingredient> objects) {
         super(context, resource, objects);
     }
 
@@ -57,19 +60,20 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
             removeButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
         }else{
-        if (ingredientEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
-            removeButton.setVisibility(View.GONE);
-            quantityEditText.setVisibility(View.GONE);
-            measurementEditText.setVisibility(View.GONE);
-            editButton.setVisibility(View.GONE);
-            ingredientEditText.setVisibility(View.GONE);
-        } else {
-            removeButton.setVisibility(View.VISIBLE);
-            quantityEditText.setVisibility(View.VISIBLE);
-            measurementEditText.setVisibility(View.VISIBLE);
-            editButton.setVisibility(View.VISIBLE);
-            ingredientEditText.setVisibility(View.VISIBLE);
-        }}
+            if (ingredientEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
+                removeButton.setVisibility(View.GONE);
+                quantityEditText.setVisibility(View.GONE);
+                measurementEditText.setVisibility(View.GONE);
+                editButton.setVisibility(View.GONE);
+                ingredientEditText.setVisibility(View.GONE);
+            } else {
+                removeButton.setVisibility(View.VISIBLE);
+                quantityEditText.setVisibility(View.VISIBLE);
+                measurementEditText.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+                ingredientEditText.setVisibility(View.VISIBLE);
+            }
+        }
 
 
         return convertView;

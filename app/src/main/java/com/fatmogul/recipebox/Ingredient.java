@@ -3,6 +3,9 @@ package com.fatmogul.recipebox;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/*
+Custom class for creating a parcelable item of ingredients for use within the recipe.
+ */
 public class Ingredient implements Parcelable {
 
     private long quantity;
@@ -11,14 +14,19 @@ public class Ingredient implements Parcelable {
 
     public Ingredient(){}
 
-    public Ingredient(long quantity, String measurement, String ingredient) {
+    /**
+     * @param quantity    This parameter is utilized to house the number of measurement of the ingredient
+     * @param measurement This parameter is utilized to house the measurement for the ingredient
+     * @param ingredient  This parameter houses the name of the ingredient
+     */
+    Ingredient(long quantity, String measurement, String ingredient) {
         this.quantity = quantity;
         this.measurement = measurement;
         this.ingredient = ingredient;
     }
 
 
-    protected Ingredient(Parcel in) {
+    private Ingredient(Parcel in) {
         quantity = in.readLong();
         measurement = in.readString();
         ingredient = in.readString();
@@ -36,7 +44,7 @@ public class Ingredient implements Parcelable {
         }
     };
 
-    public long getQuantity() {
+    long getQuantity() {
         return quantity;
     }
 
@@ -44,7 +52,7 @@ public class Ingredient implements Parcelable {
         this.quantity = quantity;
     }
 
-    public String getMeasurement() {
+    String getMeasurement() {
         return measurement;
     }
 
@@ -52,7 +60,7 @@ public class Ingredient implements Parcelable {
         this.measurement = measurement;
     }
 
-    public String getIngredient() {
+    String getIngredient() {
         return ingredient;
     }
 

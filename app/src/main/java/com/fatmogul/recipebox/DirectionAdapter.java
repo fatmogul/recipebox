@@ -13,11 +13,15 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/*
+Custom array adapter utilized to display the directions within the direction_display_list_view.
+ */
 public class DirectionAdapter extends ArrayAdapter<Direction> {
 
-    public DirectionAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Direction> objects) {
+    DirectionAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Direction> objects) {
         super(context, resource, objects);
     }
+
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -54,16 +58,17 @@ public class DirectionAdapter extends ArrayAdapter<Direction> {
         }else{
 
             if (directionEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
-            directionLabelTextView.setVisibility(View.GONE);
-            removeButton.setVisibility(View.GONE);
-            editButton.setVisibility(View.GONE);
-            directionEditText.setVisibility(View.GONE);
-        } else {
-            directionLabelTextView.setVisibility(View.VISIBLE);
-            removeButton.setVisibility(View.VISIBLE);
-            editButton.setVisibility(View.VISIBLE);
-            directionEditText.setVisibility(View.VISIBLE);
-        }}
+                directionLabelTextView.setVisibility(View.GONE);
+                removeButton.setVisibility(View.GONE);
+                editButton.setVisibility(View.GONE);
+                directionEditText.setVisibility(View.GONE);
+            } else {
+                directionLabelTextView.setVisibility(View.VISIBLE);
+                removeButton.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+                directionEditText.setVisibility(View.VISIBLE);
+            }
+        }
 
 
         return convertView;

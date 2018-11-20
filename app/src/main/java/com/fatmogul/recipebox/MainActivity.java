@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,14 +36,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-
+/*
+@mKeys is utilized to keep track of which recipe is in focus.  It is updated along with the database itself.
+ */
 
     public static final int RC_SIGN_IN = 1;
     ArrayList<Recipe> mRecipes;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRecipeDatabaseReference;
     private ChildEventListener mChildEventListener;
-    private ListView mRecipeListView;
     private RecipeAdapter mAdapter;
     private ArrayList<String> mKeys;
     private FirebaseAuth mFirebaseAuth;
@@ -58,8 +58,17 @@ public class MainActivity extends AppCompatActivity {
     public static String USER_ID = "userId";
     public static String TASK_ID = "taskId";
     public static String RECIPE = "recipe";
+    public static String RECIPE_ID = "recipeId";
     public static String INGREDIENTS = "ingredients";
     public static String DIRECTIONS = "directions";
+    public static String PHOTO_URI = "photoUriString";
+    public static String RF_USERS_PATH = "users/";
+    public static String RF_RECIPES_PATH = "/recipes";
+    public static String RF_INGREDIENTS_PATH = "/ingredients";
+    public static String RF_DIRECTIONS_PATH = "/directions";
+    public static String FAVORITE = "favorite";
+    public static String EDIT = "edit";
+    public static String NEW = "new";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         if (savedInstanceState != null) {
-            mUserId = savedInstanceState.getString("userId");
-            mRecipes = savedInstanceState.getParcelableArrayList("recipes");
+            mUserId = savedInstanceState.getString(USER_ID);
+            mRecipes = savedInstanceState.getParcelableArrayList(RECIPE);
         }
         final Spinner favoritesSpinner = findViewById(R.id.favorites);
         ArrayAdapter<CharSequence> favoritesAdapter = ArrayAdapter.createFromResource(this, R.array.favorite_filter, android.R.layout.simple_spinner_item);
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         favoritesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mFavorites = favoritesSpinner.getItemAtPosition(position).toString().equals("Favorites");
+                mFavorites = favoritesSpinner.getItemAtPosition(position).toString().equals(FAVORITE);
                 mRecipes.clear();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
@@ -107,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mRecipeListView = findViewById(R.id.recipeListView);
+        ListView mRecipeListView = findViewById(R.id.recipeListView);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -159,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("userId", mUserId);
-        outState.putParcelableArrayList("recipes", mRecipes);
+        outState.putString(USER_ID, mUserId);
+        outState.putParcelableArrayList(RECIPE, mRecipes);
         super.onSaveInstanceState(outState);
     }
 
@@ -174,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-        searchView.setQueryHint("Find Recipe");
+        searchView.setQueryHint(getString(R.string.find_recipe));
 
         final ImageView searchCloseButton = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         searchCloseButton.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String queryText) {
-                if (mSearchQueryChanged == true) {
+                if (mSearchQueryChanged) {
                     mSearchQueryChanged = false;
                     mRecipes.clear();
                     detachDatabaseReadListener();
@@ -228,9 +237,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.signed_in, Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.sign_in_canceled, Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -252,8 +261,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void addRecipe(View view) {
         Intent intent = new Intent(MainActivity.this, AddEditActivity.class);
-        intent.putExtra("userId", mUserId);
-        intent.putExtra("taskId", "new");
+        intent.putExtra(USER_ID, mUserId);
+        intent.putExtra(TASK_ID, NEW);
         startActivity(intent);
     }
 
@@ -271,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
     private void attachDatabaseReadListener() {
 
         if (mChildEventListener == null) {
-            mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+            mRecipeDatabaseReference = mFirebaseDatabase.getReference().child(RF_USERS_PATH + mUserId + RF_RECIPES_PATH);
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
@@ -282,17 +291,16 @@ public class MainActivity extends AppCompatActivity {
                             boolean meetSearchCriteria = true;
                             Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
                             ArrayList<Ingredient> ingredientTempArray = new ArrayList<>();
-                            DataSnapshot ingredientSnap = dataSnapshot.child("/ingredients");
+                            DataSnapshot ingredientSnap = dataSnapshot.child(RF_INGREDIENTS_PATH);
                             Iterable<DataSnapshot> ingredientMatchSnapshot = ingredientSnap.getChildren();
                             for (DataSnapshot ingredient : ingredientMatchSnapshot) {
                                 ingredientTempArray.add(ingredient.getValue(Ingredient.class));
-                                Log.d(Objects.requireNonNull(ingredient.getValue(Ingredient.class)).getIngredient(), "doInBackground: ");
                                 thisRecipe.setIngredientListBlob(Objects.requireNonNull(thisRecipe).getIngredientListBlob() + Objects.requireNonNull(ingredient.getValue(Ingredient.class)).getIngredient().toLowerCase());
                             }
                             Objects.requireNonNull(thisRecipe).setIngredients(ingredientTempArray);
 
                             ArrayList<Direction> directionTempArray = new ArrayList<>();
-                            DataSnapshot directionSnap = dataSnapshot.child("/directions");
+                            DataSnapshot directionSnap = dataSnapshot.child(RF_DIRECTIONS_PATH);
                             Iterable<DataSnapshot> directionMatchSnapshot = directionSnap.getChildren();
                             for (DataSnapshot direction : directionMatchSnapshot) {
                                 directionTempArray.add(direction.getValue(Direction.class));
@@ -301,15 +309,15 @@ public class MainActivity extends AppCompatActivity {
 
                             thisRecipe.setRecipeId(dataSnapshot.getKey());
                             thisRecipe.setUserId(mUserId);
-                            mRecipeDatabaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child("recipeId").setValue(dataSnapshot.getKey());
-                            mRecipeDatabaseReference.child(dataSnapshot.getKey()).child("userId").setValue(mUserId);
+                            mRecipeDatabaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child(RECIPE_ID).setValue(dataSnapshot.getKey());
+                            mRecipeDatabaseReference.child(dataSnapshot.getKey()).child(USER_ID).setValue(mUserId);
                             if (mSearchTerm != null && !thisRecipe.getIngredientListBlob().contains(mSearchTerm.toLowerCase())) {
                                 meetSearchCriteria = false;
                             }
-                            if (mFilterSearch != null && !mFilterSearch.equals("All Foods") && !thisRecipe.getIngredientListBlob().contains(mFilterSearch.toLowerCase())) {
+                            if (mFilterSearch != null && !mFilterSearch.equals(getString(R.string.all_foods)) && !thisRecipe.getIngredientListBlob().contains(mFilterSearch.toLowerCase())) {
                                 meetSearchCriteria = false;
                             }
-                            if (mFavorites == true && !thisRecipe.isFavorite()) {
+                            if (mFavorites && !thisRecipe.isFavorite()) {
                                 meetSearchCriteria = false;
                             }
                             if (meetSearchCriteria) {
