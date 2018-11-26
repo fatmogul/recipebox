@@ -16,7 +16,7 @@ import java.util.Objects;
 /*
 Custom array adapter utilized to display the directions within the direction_display_list_view.
  */
-public class DirectionAdapter extends ArrayAdapter<Direction> {
+class DirectionAdapter extends ArrayAdapter<Direction> {
 
     DirectionAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Direction> objects) {
         super(context, resource, objects);

@@ -34,7 +34,6 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static com.fatmogul.recipebox.MainActivity.DIRECTIONS;
@@ -124,29 +123,21 @@ public class AddEditActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
     private static ArrayList<Ingredient> mIngredients;
-    private static ArrayList mDirections;
+    private static ArrayList<Direction> mDirections;
     private static IngredientAdapter mIngredientAdapter;
     private static DirectionAdapter mDirectionAdapter;
     private String mUserId;
     private Uri mPhotoDownloadUri;
     private String mTaskId;
     private Button mPhotoPickerButton;
-    private Button mSaveButton;
     private Button mClearButton;
-    private Button mCancelButton;
-    private Button mDeleteButton;
     private ImageView mImageView;
     private EditText mRecipeTitleEditText;
     private EditText mPrepTimeEditText;
     private EditText mCookTimeEditText;
     private EditText mServesEditText;
     private CheckBox mFavoritesCheckBox;
-    private Button mAddIngredientButton;
-    private Button mAddDirectionButton;
-    private ListView mIngredientListView;
-    private ListView mDirectionsListView;
     private FirebaseDatabase mFirebaseDatabase;
-    private FirebaseStorage mFirebaseStorage;
     private DatabaseReference mRecipeDatabaseReference;
     private Recipe mRecipe;
     private String mRecipeId;
@@ -181,7 +172,7 @@ public class AddEditActivity extends AppCompatActivity {
      */
     public static void updateDirection(final int position, Activity context) {
         final EditText directionBox = new EditText(context);
-        Direction thisDirection = (Direction) mDirections.get(position);
+        Direction thisDirection = mDirections.get(position);
         directionBox.setText(thisDirection.getDirectionText());
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(Resources.getSystem().getString(R.string.update_direction))
@@ -191,7 +182,7 @@ public class AddEditActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!directionBox.getText().toString().equals("")) {
                             mDirections.set(position, new Direction(directionBox.getText().toString()));
-                            Direction firstDirection = (Direction) mDirections.get(0);
+                            Direction firstDirection = mDirections.get(0);
                             if (firstDirection.getDirectionText().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                                 mDirections.remove(0);
                             }
@@ -257,7 +248,7 @@ public class AddEditActivity extends AppCompatActivity {
     If the Add Ingredient button is pressed, it calls this module to open a dialog box to collect the
         data for the new ingredient.
      */
-    public void addIngredient() {
+    private void addIngredient() {
         LayoutInflater inflater = getLayoutInflater();
         final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
 
@@ -309,7 +300,7 @@ public class AddEditActivity extends AppCompatActivity {
     If the Add Direction button is pressed, it calls this module to open a dialog box to collect the
         data for the new ingredient.
      */
-    public void addDirection() {
+    private void addDirection() {
         final EditText directionEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
                 .setTitle(Resources.getSystem().getString(R.string.add_direction))
@@ -319,7 +310,7 @@ public class AddEditActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!directionEditText.getText().toString().equals("")) {
                             mDirections.add(new Direction(directionEditText.getText().toString()));
-                            Direction firstDirection = (Direction) mDirections.get(0);
+                            Direction firstDirection = mDirections.get(0);
                             if (firstDirection.getDirectionText().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                                 mDirections.remove(0);
                             }
@@ -331,7 +322,7 @@ public class AddEditActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDirections.add(new Direction(directionEditText.getText().toString()));
-                        Direction firstDirection = (Direction) mDirections.get(0);
+                        Direction firstDirection = mDirections.get(0);
                         if (firstDirection.getDirectionText().equals(Resources.getSystem().getString(R.string.none_loaded))) {
                             mDirections.remove(0);
                         }
@@ -355,14 +346,14 @@ public class AddEditActivity extends AppCompatActivity {
         mCookTimeEditText = findViewById(R.id.cook_time_edit_text);
         mServesEditText = findViewById(R.id.servings_edit_text);
         mFavoritesCheckBox = findViewById(R.id.favorites_check_box);
-        mAddIngredientButton = findViewById(R.id.add_ingredient_button);
-        mAddDirectionButton = findViewById(R.id.add_direction_button);
-        mDeleteButton = findViewById(R.id.delete_recipe_button);
+        Button mAddIngredientButton = findViewById(R.id.add_ingredient_button);
+        Button mAddDirectionButton = findViewById(R.id.add_direction_button);
+        Button mDeleteButton = findViewById(R.id.delete_recipe_button);
         mRecipeTitleEditText.clearFocus();
         mUserId = getIntent().getStringExtra(MainActivity.USER_ID);
         mTaskId = getIntent().getStringExtra(MainActivity.TASK_ID);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
         mRecipeId = null;
         mIngredientBlobList = null;
         /*
@@ -401,7 +392,7 @@ public class AddEditActivity extends AppCompatActivity {
         }
         mRecipeDatabaseReference = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment));
         mRecipePhotoStorageReference = mFirebaseStorage.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.photos_path_segment));
-        mIngredientListView = findViewById(R.id.ingredients_list_view);
+        ListView mIngredientListView = findViewById(R.id.ingredients_list_view);
 
         if (mIngredients.size() == 0) {
             mIngredients = new ArrayList<>();
@@ -410,7 +401,7 @@ public class AddEditActivity extends AppCompatActivity {
         mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
         mIngredientListView.setAdapter(mIngredientAdapter);
 
-        mDirectionsListView = findViewById(R.id.directions_list_view);
+        ListView mDirectionsListView = findViewById(R.id.directions_list_view);
         if (mDirections.size() == 0) {
             mDirections = new ArrayList<>();
             mDirections.add(new Direction(getString(R.string.none_loaded)));
@@ -419,9 +410,9 @@ public class AddEditActivity extends AppCompatActivity {
         mDirectionsListView.setAdapter(mDirectionAdapter);
 
         mPhotoPickerButton = findViewById(R.id.photo_picker_button);
-        mSaveButton = findViewById(R.id.save_recipe_button);
+        Button mSaveButton = findViewById(R.id.save_recipe_button);
         mClearButton = findViewById(R.id.clear_button);
-        mCancelButton = findViewById(R.id.cancel_button);
+        Button mCancelButton = findViewById(R.id.cancel_button);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -454,7 +445,7 @@ public class AddEditActivity extends AppCompatActivity {
                 }
 
                 boolean favoriteSelection = mFavoritesCheckBox.isChecked();
-                List missingData = new ArrayList();
+                ArrayList<String> missingData = new ArrayList<>();
                 recipeTitle = mRecipeTitleEditText.getText().toString();
                 if (recipeTitle.equals("")) {
                     missingData.add(getString(R.string.recipe_name));
@@ -596,7 +587,7 @@ public class AddEditActivity extends AppCompatActivity {
         }
     }
 
-    public void setPicture() {
+    private void setPicture() {
         Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(mImageView);
         if (mPhotoDownloadUri != null) {
             mPhotoPickerButton.setText(R.string.change_photo);

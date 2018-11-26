@@ -62,23 +62,7 @@ public class DetailActivity extends AppCompatActivity {
     private Recipe mRecipe;
 private ArrayList<Ingredient> mIngredients;
 private ArrayList<Direction> mDirections;
-private IngredientAdapter mIngredientAdapter;
-private DirectionAdapter mDirectionAdapter;
-private ListView mIngredientListView;
-private ListView mDirectionListView;
-private TextView mPrepTimeTextView;
-private TextView mCookTimeTextView;
-private TextView mServingsTextView;
-private ImageView mImageView;
-private TextView mRecipeTitleView;
-private Uri mPhotoDownloadUri;
-
-    private Button mEditButton;
-private Button mShareButton;
-private Button mFavoriteButton;
-
-
-
+    private Button mFavoriteButton;
 
 
     @Override
@@ -91,19 +75,19 @@ private Button mFavoriteButton;
         mDirections = getIntent().getParcelableArrayListExtra(MainActivity.DIRECTIONS);
         setTitle(mRecipe.getTitle());
 
-        mIngredientListView = findViewById(R.id.ingredients_detail_list_view);
-        mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
+        ListView mIngredientListView = findViewById(R.id.ingredients_detail_list_view);
+        IngredientAdapter mIngredientAdapter = new IngredientAdapter(this, R.layout.ingredient_display_list_view, mIngredients);
         mIngredientListView.setAdapter(mIngredientAdapter);
 
-        mDirectionListView = findViewById(R.id.directions_detail_list_view);
-        mDirectionAdapter = new DirectionAdapter(this,R.layout.direction_display_list_view,mDirections);
+        ListView mDirectionListView = findViewById(R.id.directions_detail_list_view);
+        DirectionAdapter mDirectionAdapter = new DirectionAdapter(this, R.layout.direction_display_list_view, mDirections);
         mDirectionListView.setAdapter(mDirectionAdapter);
 
-        mPrepTimeTextView = findViewById(R.id.prep_time_variable_text_view_detail_screen);
-        mCookTimeTextView = findViewById(R.id.cook_time_variable_text_view_detail_screen);
-        mServingsTextView = findViewById(R.id.servings_variable_detail_view);
-        mImageView = findViewById(R.id.detail_image_view);
-        mRecipeTitleView = findViewById(R.id.recipe_title_detail_text_view);
+        TextView mPrepTimeTextView = findViewById(R.id.prep_time_variable_text_view_detail_screen);
+        TextView mCookTimeTextView = findViewById(R.id.cook_time_variable_text_view_detail_screen);
+        TextView mServingsTextView = findViewById(R.id.servings_variable_detail_view);
+        ImageView mImageView = findViewById(R.id.detail_image_view);
+        TextView mRecipeTitleView = findViewById(R.id.recipe_title_detail_text_view);
 
 
         mPrepTimeTextView.setText(String.valueOf(mRecipe.getPrepTime()));
@@ -114,14 +98,14 @@ private Button mFavoriteButton;
         Retrieving the image from Firebase Storage and placing it in the ImageView
          */
         try{
-            mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
+            Uri mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(mImageView);
             mImageView.setVisibility(View.VISIBLE);
         } catch (Exception e){
             mImageView.setVisibility(View.GONE);
         }
 
-        mShareButton = findViewById(R.id.detail_share_button);
+        Button mShareButton = findViewById(R.id.detail_share_button);
 
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +167,7 @@ TODO: update share functionality to include image and html formatted text.
             }
         });
 
-        mEditButton = findViewById(R.id.detail_edit_button);
+        Button mEditButton = findViewById(R.id.detail_edit_button);
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class RecipeAdapter extends ArrayAdapter<Recipe> {
+class RecipeAdapter extends ArrayAdapter<Recipe> {
     
     public RecipeAdapter(Context context, int resource, ArrayList<Recipe> objects) {
         super(context, resource, objects);

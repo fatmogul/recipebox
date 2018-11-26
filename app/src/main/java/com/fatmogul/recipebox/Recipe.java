@@ -38,7 +38,7 @@ public class Recipe implements Parcelable{
         this.ingredientListBlob = ingredientListBlob;
     }
 
-    protected Recipe(Parcel in) {
+    Recipe(Parcel in) {
         title = in.readString();
         titleLower = in.readString();
         prepTime = in.readLong();
@@ -48,7 +48,6 @@ public class Recipe implements Parcelable{
         favorite = in.readByte() != 0;
         recipeId = in.readString();
         userId = in.readString();
-        //ingredients = in.readArrayList(Ingredient);
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {

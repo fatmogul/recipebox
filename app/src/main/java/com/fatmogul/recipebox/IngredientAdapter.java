@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /*
 Custom array adapter utilized in displaying specific ingredients within the ingredient_display_list_view.
  */
-public class IngredientAdapter extends ArrayAdapter<Ingredient> {
+class IngredientAdapter extends ArrayAdapter<Ingredient> {
 
 
     IngredientAdapter(@NonNull Context context, int resource, ArrayList<Ingredient> objects) {

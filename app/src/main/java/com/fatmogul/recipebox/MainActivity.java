@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
 @mKeys is utilized to keep track of which recipe is in focus.  It is updated along with the database itself.
  */
 
-    public static final int RC_SIGN_IN = 1;
-    ArrayList<Recipe> mRecipes;
+    public final static String USER_ID = "userId";
+    public final static String TASK_ID = "taskId";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRecipeDatabaseReference;
     private ChildEventListener mChildEventListener;
@@ -54,21 +54,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean mSearchQueryChanged = false;
     private String mFilterSearch;
     private boolean mFavorites;
-
-    public static String USER_ID = "userId";
-    public static String TASK_ID = "taskId";
-    public static String RECIPE = "recipe";
-    public static String RECIPE_ID = "recipeId";
-    public static String INGREDIENTS = "ingredients";
-    public static String DIRECTIONS = "directions";
-    public static String PHOTO_URI = "photoUriString";
-    public static String RF_USERS_PATH = "users/";
-    public static String RF_RECIPES_PATH = "/recipes";
-    public static String RF_INGREDIENTS_PATH = "/ingredients";
-    public static String RF_DIRECTIONS_PATH = "/directions";
-    public static String FAVORITE = "favorite";
-    public static String EDIT = "edit";
-    public static String NEW = "new";
+    public final static String RECIPE = "recipe";
+    public final static String INGREDIENTS = "ingredients";
+    public final static String DIRECTIONS = "directions";
+    public final static String PHOTO_URI = "photoUriString";
+    public final static String RF_USERS_PATH = "users/";
+    public final static String RF_RECIPES_PATH = "/recipes";
+    public final static String FAVORITE = "favorite";
+    public final static String EDIT = "edit";
+    private static final int RC_SIGN_IN = 1;
+    private final static String RECIPE_ID = "recipeId";
+    private final static String RF_INGREDIENTS_PATH = "/ingredients";
+    private final static String RF_DIRECTIONS_PATH = "/directions";
+    private final static String NEW = "new";
+    private ArrayList<Recipe> mRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void onSignedInInitialize(String userId) {
+    private void onSignedInInitialize(String userId) {
         mUserId = userId;
         attachDatabaseReadListener();
     }
@@ -284,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
+                    //TODO: create class for Asynctask to fix static field leak
                     AsyncTask task = new AsyncTask() {
                         @Override
                         protected Object doInBackground(Object[] objects) {

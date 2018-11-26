@@ -18,16 +18,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class RecipeWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+class RecipeWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 private final Context mContext;
 private final int appWidgetId;
 private ArrayList<Recipe> mRecipes;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mRecipeDatabaseReference;
-    private FirebaseAuth mFirebaseAuth;
-    private String mUserId;
-
 
 
     public RecipeWidgetRemoteViewsFactory(Context context, Intent intent) {
@@ -40,10 +35,10 @@ private ArrayList<Recipe> mRecipes;
 
     @Override
     public void onCreate() {
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mUserId = Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid();
-        mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        String mUserId = Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid();
+        DatabaseReference mRecipeDatabaseReference = mFirebaseDatabase.getReference().child("users/" + mUserId + "/recipes");
         mRecipeDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
