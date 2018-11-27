@@ -362,9 +362,9 @@ public class AddEditActivity extends AppCompatActivity {
         data vs the "new" taskId, which designates that this is a new recipe, which keeps all fields
         empty.
          */
-        if (mTaskId.equals(Resources.getSystem().getString(R.string.edit))) {
-            setTitle(R.string.edit + R.string.blank_space + mRecipe.getTitle());
+        if (mTaskId.equals(MainActivity.EDIT)) {
             mRecipe = getIntent().getParcelableExtra(MainActivity.RECIPE);
+            setTitle(R.string.edit + R.string.blank_space + mRecipe.getTitle());
             mDeleteButton.setVisibility(View.VISIBLE);
             mRecipeId = mRecipe.getRecipeId();
             mFavoritesCheckBox.setChecked(mRecipe.isFavorite());
@@ -394,7 +394,7 @@ public class AddEditActivity extends AppCompatActivity {
         mRecipePhotoStorageReference = mFirebaseStorage.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.photos_path_segment));
         ListView mIngredientListView = findViewById(R.id.ingredients_list_view);
 
-        if (mIngredients.size() == 0) {
+        if (mIngredients == null) {
             mIngredients = new ArrayList<>();
             mIngredients.add(new Ingredient(0, null, getString(R.string.none_loaded)));
         }
@@ -402,7 +402,7 @@ public class AddEditActivity extends AppCompatActivity {
         mIngredientListView.setAdapter(mIngredientAdapter);
 
         ListView mDirectionsListView = findViewById(R.id.directions_list_view);
-        if (mDirections.size() == 0) {
+        if (mDirections == null) {
             mDirections = new ArrayList<>();
             mDirections.add(new Direction(getString(R.string.none_loaded)));
         }
@@ -484,10 +484,10 @@ public class AddEditActivity extends AppCompatActivity {
                             mRecipeId,
                             mUserId,
                             mIngredientBlobList);
-                    if (mTaskId.equals(getString(R.string.new_string))) {
+                    if (mTaskId.equals(MainActivity.NEW)) {
                         mRecipeDatabaseReference.push().setValue(recipe);
                         finish();
-                    } else if (mTaskId.equals(R.string.edit)) {
+                    } else if (mTaskId.equals(MainActivity.EDIT)) {
                         DatabaseReference rf = mFirebaseDatabase.getReference().child(getString(R.string.users_path_segment) + mUserId + getString(R.string.recipes_path_segment) + mRecipe.getRecipeId());
                         rf.setValue(recipe);
                         Intent intent = new Intent(AddEditActivity.this, DetailActivity.class);
@@ -561,6 +561,7 @@ public class AddEditActivity extends AppCompatActivity {
                 bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                 byte[] imageData = baos.toByteArray();
                 UploadTask uploadTask = photoRef.putBytes(imageData);
+
                 Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -581,6 +582,7 @@ public class AddEditActivity extends AppCompatActivity {
                         }
                     }
                 });
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

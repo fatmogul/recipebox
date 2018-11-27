@@ -18,6 +18,7 @@ Custom array adapter utilized to display the directions within the direction_dis
  */
 class DirectionAdapter extends ArrayAdapter<Direction> {
 
+    @SuppressWarnings("SameParameterValue")
     DirectionAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Direction> objects) {
         super(context, resource, objects);
     }

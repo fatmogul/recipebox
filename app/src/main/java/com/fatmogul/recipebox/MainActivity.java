@@ -62,11 +62,11 @@ public class MainActivity extends AppCompatActivity {
     public final static String RF_RECIPES_PATH = "/recipes";
     public final static String FAVORITE = "favorite";
     public final static String EDIT = "edit";
+    public final static String NEW = "new";
     private static final int RC_SIGN_IN = 1;
     private final static String RECIPE_ID = "recipeId";
     private final static String RF_INGREDIENTS_PATH = "/ingredients";
     private final static String RF_DIRECTIONS_PATH = "/directions";
-    private final static String NEW = "new";
     private ArrayList<Recipe> mRecipes;
 
     @Override

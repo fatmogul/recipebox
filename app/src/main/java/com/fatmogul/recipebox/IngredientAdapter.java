@@ -18,6 +18,7 @@ Custom array adapter utilized in displaying specific ingredients within the ingr
 class IngredientAdapter extends ArrayAdapter<Ingredient> {
 
 
+    @SuppressWarnings("SameParameterValue")
     IngredientAdapter(@NonNull Context context, int resource, ArrayList<Ingredient> objects) {
         super(context, resource, objects);
     }
