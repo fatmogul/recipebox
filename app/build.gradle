@@ -47,7 +47,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.5'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
-    implementation 'com.android.support:recyclerview-v7:27.1.0'
+    implementation "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:customtabs:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:support-media-compat:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:exifinterface:${rootProject.ext.supportLibVersion}"
 }
 
 apply plugin: 'com.google.gms.google-services'
