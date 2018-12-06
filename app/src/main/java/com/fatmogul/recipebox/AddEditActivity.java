@@ -1,5 +1,6 @@
 package com.fatmogul.recipebox;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -201,7 +202,7 @@ public class AddEditActivity extends AppCompatActivity {
     */
     public static void updateIngredient(final int position, Activity context) {
         LayoutInflater inflater = context.getLayoutInflater();
-        final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
+        @SuppressLint("InflateParams") final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
         final EditText qtyBox = dialogBox.findViewById(R.id.quantity_add_edit_text);
         final EditText measurementBox = dialogBox.findViewById(R.id.measurement_add_edit_text);
         final EditText ingredientBox = dialogBox.findViewById(R.id.ingredient_add_edit_text);
@@ -250,7 +251,7 @@ public class AddEditActivity extends AppCompatActivity {
      */
     private void addIngredient() {
         LayoutInflater inflater = getLayoutInflater();
-        final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
+        @SuppressLint("InflateParams") final View dialogBox = inflater.inflate(R.layout.add_ingredient_dialog, null);
 
         AlertDialog dialog = new AlertDialog.Builder(AddEditActivity.this)
                 .setTitle(Resources.getSystem().getString(R.string.add_ingredient))

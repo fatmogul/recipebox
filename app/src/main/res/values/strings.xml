@@ -57,7 +57,6 @@
     <string name="users_path_segment">users/</string>
     <string name="recipes_path_segment">/recipes</string>
     <string name="photos_path_segment">/photos</string>
-    <string name="new_string">new</string>
     <string name="add_recipe">Add New Recipe</string>
     <string name="blank_space"> </string>
     <string name="complete_action">Complete action using</string>

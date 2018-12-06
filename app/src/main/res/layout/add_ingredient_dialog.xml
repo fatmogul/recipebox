@@ -14,7 +14,7 @@
         android:inputType="numberDecimal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/measurement_add_edit_text"/>
+        app:layout_constraintRight_toLeftOf="@id/measurement_add_edit_text" />
     <EditText
         android:inputType="text"
         android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="@id/quantity_add_edit_text"
         app:layout_constraintBottom_toBottomOf="@id/quantity_add_edit_text"
         app:layout_constraintLeft_toRightOf="@id/quantity_add_edit_text"
-        app:layout_constraintRight_toLeftOf="@id/ingredient_add_edit_text"/>
+        app:layout_constraintRight_toLeftOf="@id/ingredient_add_edit_text" />
     <EditText
         android:inputType="textCapWords"
         android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="@id/quantity_add_edit_text"
         app:layout_constraintBottom_toBottomOf="@id/quantity_add_edit_text"
         app:layout_constraintLeft_toRightOf="@id/measurement_add_edit_text"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
