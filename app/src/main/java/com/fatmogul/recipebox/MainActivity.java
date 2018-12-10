@@ -3,7 +3,6 @@ package com.fatmogul.recipebox;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -283,10 +282,6 @@ public class MainActivity extends AppCompatActivity {
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
-                    //TODO: create class for Asynctask to fix static field leak
-                    AsyncTask task = new AsyncTask() {
-                        @Override
-                        protected Object doInBackground(Object[] objects) {
 
                             boolean meetSearchCriteria = true;
                             Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
@@ -325,17 +320,11 @@ public class MainActivity extends AppCompatActivity {
                                 mRecipes.add(thisRecipe);
                             }
 
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Object o) {
-                            super.onPostExecute(o);
 
                             mAdapter.notifyDataSetChanged();
-                            }
-                    };
-                task.execute();}
+
+                }
+
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
