@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@drawable/back"
     android:layout_width="match_parent"
@@ -14,7 +15,9 @@
         android:inputType="numberDecimal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/measurement_add_edit_text" />
+        android:importantForAutofill="no"
+        app:layout_constraintRight_toLeftOf="@id/measurement_add_edit_text"
+        tools:targetApi="o" />
     <EditText
         android:inputType="text"
         android:layout_width="wrap_content"
@@ -24,7 +27,9 @@
         app:layout_constraintTop_toTopOf="@id/quantity_add_edit_text"
         app:layout_constraintBottom_toBottomOf="@id/quantity_add_edit_text"
         app:layout_constraintLeft_toRightOf="@id/quantity_add_edit_text"
-        app:layout_constraintRight_toLeftOf="@id/ingredient_add_edit_text" />
+        android:importantForAutofill="no"
+        app:layout_constraintRight_toLeftOf="@id/ingredient_add_edit_text"
+        tools:targetApi="o" />
     <EditText
         android:inputType="textCapWords"
         android:layout_width="wrap_content"
@@ -34,7 +39,9 @@
         app:layout_constraintTop_toTopOf="@id/quantity_add_edit_text"
         app:layout_constraintBottom_toBottomOf="@id/quantity_add_edit_text"
         app:layout_constraintLeft_toRightOf="@id/measurement_add_edit_text"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:importantForAutofill="no"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:targetApi="o" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -48,24 +48,12 @@ public class Ingredient implements Parcelable {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
     String getMeasurement() {
         return measurement;
     }
 
-    public void setMeasurement(String measurement) {
-        this.measurement = measurement;
-    }
-
     String getIngredient() {
         return ingredient;
-    }
-
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
     }
 
     @Override

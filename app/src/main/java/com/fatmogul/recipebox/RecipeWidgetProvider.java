@@ -19,27 +19,27 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     public void onUpdate(final Context ctxt, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
 
-        for (int i = 0; i < appWidgetIds.length; i++) {
-                Intent svcIntent = new Intent(ctxt, WidgetService.class);
-                Log.d("first", "onUpdate: ");
-                svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-                svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-                RemoteViews widget = new RemoteViews(ctxt.getPackageName(),
-                        R.layout.recipe_widget_provider);
-                widget.setRemoteAdapter(R.id.recipeWidgetListView,
-                        svcIntent);
+        for (int appWidgetId : appWidgetIds) {
+            Intent svcIntent = new Intent(ctxt, WidgetService.class);
+            Log.d("first", "onUpdate: ");
+            svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+            RemoteViews widget = new RemoteViews(ctxt.getPackageName(),
+                    R.layout.recipe_widget_provider);
+            widget.setRemoteAdapter(R.id.recipeWidgetListView,
+                    svcIntent);
 
-                Intent clickIntent = new Intent(ctxt, DetailActivity.class);
-                PendingIntent clickPI = PendingIntent
-                        .getActivity(ctxt, 0,
-                                clickIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent clickIntent = new Intent(ctxt, DetailActivity.class);
+            PendingIntent clickPI = PendingIntent
+                    .getActivity(ctxt, 0,
+                            clickIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
 
-                widget.setPendingIntentTemplate(R.id.recipeWidgetListView, clickPI);
+            widget.setPendingIntentTemplate(R.id.recipeWidgetListView, clickPI);
 
-                appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
+            appWidgetManager.updateAppWidget(appWidgetId, widget);
 
-            }
+        }
 
 
         super.onUpdate(ctxt, appWidgetManager, appWidgetIds);

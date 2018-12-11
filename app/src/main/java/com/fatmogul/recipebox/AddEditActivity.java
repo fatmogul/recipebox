@@ -356,6 +356,7 @@ public class AddEditActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
         mRecipeId = null;
+        final StringBuilder ingredientSb = new StringBuilder();
         mIngredientBlobList = null;
         /*
         The "Edit" taskId, which comes from the intent to this activity, designates that we are
@@ -374,6 +375,7 @@ public class AddEditActivity extends AppCompatActivity {
             try {
                 mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             } catch (Exception e) {
+                //TODO: add placeholder image
             }
             mRecipeTitleEditText.setText(mRecipe.getTitle());
             mPrepTimeEditText.setText(String.valueOf(mRecipe.getPrepTime()));
@@ -442,7 +444,7 @@ public class AddEditActivity extends AppCompatActivity {
                     photoUri = mPhotoDownloadUri.toString();
                 }
                 for (Ingredient ingredient : mIngredients) {
-                    mIngredientBlobList += ingredient.getIngredient();
+                    ingredientSb.append(ingredient.getIngredient());
                 }
 
                 boolean favoriteSelection = mFavoritesCheckBox.isChecked();
@@ -467,12 +469,15 @@ public class AddEditActivity extends AppCompatActivity {
                     missingData.add(getString(R.string.serves));
                 }
                 if (missingData.size() > 0) {
-                    String toastMessage = getString(R.string.add_edit_save_error_toast_message);
+                    StringBuilder toastMessage = null;
+                    toastMessage.append((R.string.add_edit_save_error_toast_message));
                     for (Object string : missingData) {
-                        toastMessage += "\n" + string.toString();
+                        toastMessage.append("\n");
+                        toastMessage.append(string.toString());
                     }
-                    Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), toastMessage.toString(), Toast.LENGTH_LONG).show();
                 } else {
+                    mIngredientBlobList = ingredientSb.toString();
                     Recipe recipe = new Recipe(recipeTitle,
                             recipeTitle.toLowerCase(),
                             prepTime,
@@ -563,6 +568,7 @@ public class AddEditActivity extends AppCompatActivity {
                 byte[] imageData = baos.toByteArray();
                 UploadTask uploadTask = photoRef.putBytes(imageData);
 
+                //noinspection unused
                 Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {

@@ -109,10 +109,6 @@ public class Recipe implements Parcelable{
         this.photoUrl = photoUrl;
     }
 
-    public String getTitleLower() {
-        return titleLower;
-    }
-
     public void setTitleLower(String titleLower) {
         this.titleLower = titleLower.toLowerCase();
     }

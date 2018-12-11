@@ -68,22 +68,31 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
         shareIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ingredientText = "";
+                StringBuilder ingredientText = new StringBuilder();
                 for(Ingredient ingredient: recipe.getIngredients()){
-                    ingredientText = ingredientText + "\n" + ingredient.getQuantity() + " " + ingredient.getMeasurement() + " " + ingredient.getIngredient();
+                    ingredientText.append(ingredientText)
+                            .append("\n")
+                            .append(ingredient.getQuantity())
+                            .append(" ")
+                            .append(ingredient.getMeasurement())
+                            .append(" ")
+                            .append(ingredient.getIngredient());
                 }
-                String directionText = "";
+                StringBuilder directionText = new StringBuilder();
                 int positionCounter = 0;
                 for(Direction direction : recipe.getDirections()){
                     positionCounter += 1;
-                    directionText = directionText + "\n" + String.valueOf(positionCounter) + ". " + direction.getDirectionText();
+                    directionText.append("\n")
+                            .append(String.valueOf(positionCounter))
+                            .append(". ")
+                            .append(direction.getDirectionText());
                 }
                 String tempText = recipe.getTitle() +
                         "\nPrep Time: " + recipe.getPrepTime() +
                         "\nCook Time: " + recipe.getCookTime() +
                         "\nServes: " + recipe.getServings() +
-                        "\nIngredients: " + ingredientText +
-                        "\nDirections: " + directionText;
+                        "\nIngredients: " + ingredientText.toString() +
+                        "\nDirections: " + directionText.toString();
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_TEXT,tempText);

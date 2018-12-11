@@ -35,10 +35,6 @@ public class Direction implements Parcelable {
         return directionText;
     }
 
-    public void setDirectionText(String directionText) {
-        this.directionText = directionText;
-    }
-
     @Override
     public int describeContents() {
         return 0;
