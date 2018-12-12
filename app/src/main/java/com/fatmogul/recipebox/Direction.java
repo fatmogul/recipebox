@@ -7,18 +7,6 @@ import android.os.Parcelable;
 Custom class for directions to the recipe.
  */
 public class Direction implements Parcelable {
-    private String directionText;
-
-    public Direction(){}
-
-    Direction(String directionText) {
-        this.directionText = directionText;
-    }
-
-    private Direction(Parcel in) {
-        directionText = in.readString();
-    }
-
     public static final Creator<Direction> CREATOR = new Creator<Direction>() {
         @Override
         public Direction createFromParcel(Parcel in) {
@@ -30,6 +18,18 @@ public class Direction implements Parcelable {
             return new Direction[size];
         }
     };
+    private String directionText;
+
+    public Direction() {
+    }
+
+    Direction(String directionText) {
+        this.directionText = directionText;
+    }
+
+    private Direction(Parcel in) {
+        directionText = in.readString();
+    }
 
     String getDirectionText() {
         return directionText;

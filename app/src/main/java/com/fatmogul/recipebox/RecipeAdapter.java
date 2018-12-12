@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 class RecipeAdapter extends ArrayAdapter<Recipe> {
-    
-    public RecipeAdapter(Context context, int resource, ArrayList<Recipe> objects) {
+
+    RecipeAdapter(Context context, int resource, ArrayList<Recipe> objects) {
         super(context, resource, objects);
     }
 
@@ -32,7 +32,7 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
         if (convertView == null) {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.recipe, parent, false);
         }
-        
+
         final ImageView recipeImageView = convertView.findViewById(R.id.recipeImageView);
         TextView titleTextView = convertView.findViewById(R.id.recipeNameView);
         TextView prepTimeTextView = convertView.findViewById(R.id.prepTimeView);
@@ -42,24 +42,23 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
         final Recipe recipe = getItem(position);
 
         assert recipe != null;
-        if(recipe.getPhotoUrl() != null){
+        if (recipe.getPhotoUrl() != null) {
             recipeImageView.setVisibility(View.VISIBLE);
             Picasso.get().load(Uri.parse(recipe.getPhotoUrl())).fit().centerCrop().into(recipeImageView);
-        }
-        else{
+        } else {
             recipeImageView.setVisibility(View.GONE);
         }
         titleTextView.setText(recipe.getTitle());
-        prepTimeTextView.setText(String.format(getContext().getResources().getString(R.string.minutes_display),Long.toString(recipe.getPrepTime())));
-        cookTimeTextView.setText(String.format(getContext().getResources().getString(R.string.minutes_display),Long.toString(recipe.getCookTime())));
+        prepTimeTextView.setText(String.format(getContext().getResources().getString(R.string.minutes_display), Long.toString(recipe.getPrepTime())));
+        cookTimeTextView.setText(String.format(getContext().getResources().getString(R.string.minutes_display), Long.toString(recipe.getCookTime())));
         servingsView.setText(String.format(Locale.getDefault(), "%d", recipe.getServings()));
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),DetailActivity.class);
-                intent.putExtra("recipe",recipe);
-                intent.putParcelableArrayListExtra("ingredients",recipe.getIngredients());
-                intent.putParcelableArrayListExtra("directions",recipe.getDirections());
+                Intent intent = new Intent(getContext(), DetailActivity.class);
+                intent.putExtra("recipe", recipe);
+                intent.putParcelableArrayListExtra("ingredients", recipe.getIngredients());
+                intent.putParcelableArrayListExtra("directions", recipe.getDirections());
                 getContext().startActivity(intent);
             }
         });
@@ -69,7 +68,7 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View v) {
                 StringBuilder ingredientText = new StringBuilder();
-                for(Ingredient ingredient: recipe.getIngredients()){
+                for (Ingredient ingredient : recipe.getIngredients()) {
                     ingredientText.append(ingredientText)
                             .append("\n")
                             .append(ingredient.getQuantity())
@@ -80,7 +79,7 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
                 }
                 StringBuilder directionText = new StringBuilder();
                 int positionCounter = 0;
-                for(Direction direction : recipe.getDirections()){
+                for (Direction direction : recipe.getDirections()) {
                     positionCounter += 1;
                     directionText.append("\n")
                             .append(String.valueOf(positionCounter))
@@ -95,17 +94,16 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
                         "\nDirections: " + directionText.toString();
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_TEXT,tempText);
-                Intent.createChooser(intent,"Share using");
+                intent.putExtra(Intent.EXTRA_TEXT, tempText);
+                Intent.createChooser(intent, "Share using");
                 getContext().startActivity(intent);
-                 }
+            }
         });
 
         final ImageView favoriteIcon = convertView.findViewById(R.id.favorite_icon);
-        if(recipe.isFavorite()){
+        if (recipe.isFavorite()) {
             favoriteIcon.setImageResource(R.drawable.ic_favorite_red_24dp);
-        }
-        else{
+        } else {
             favoriteIcon.setImageResource(R.drawable.ic_favorite_border_grey_24dp);
         }
         favoriteIcon.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +126,9 @@ class RecipeAdapter extends ArrayAdapter<Recipe> {
                 DatabaseReference rf = db.getReference().child("users/" + recipe.getUserId() + "/recipes");
                 rf.child(recipe.getRecipeId()).child("favorite").setValue(isFavorite);
                 recipe.setFavorite(isFavorite);
-                Toast.makeText(getContext(),toastText,Toast.LENGTH_SHORT).show();
-            }});
+                Toast.makeText(getContext(), toastText, Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
 }

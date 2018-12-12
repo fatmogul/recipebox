@@ -31,9 +31,9 @@ import static com.fatmogul.recipebox.MainActivity.USER_ID;
 
     @mRecipe is the Recipe being viewed on the detail screen, obtained from the Intent which brings
         you to the screen
-    @mIngredients is the ArrayList of INGREDIENTs received from the Intent which brings you to this
+    @mIngredients is the ArrayList of INGREDIENTS received from the Intent which brings you to this
         screen
-    @mDirections is the ArrayList of DIRECTIONs received from the Intent which brings you to this
+    @mDirections is the ArrayList of DIRECTIONS received from the Intent which brings you to this
         screen
     @mIngredientAdapter is the local custom IngredientAdapter for displaying the ingredients in this
         view
@@ -60,8 +60,8 @@ import static com.fatmogul.recipebox.MainActivity.USER_ID;
 public class DetailActivity extends AppCompatActivity {
 
     private Recipe mRecipe;
-private ArrayList<Ingredient> mIngredients;
-private ArrayList<Direction> mDirections;
+    private ArrayList<Ingredient> mIngredients;
+    private ArrayList<Direction> mDirections;
     private Button mFavoriteButton;
 
 
@@ -97,11 +97,11 @@ private ArrayList<Direction> mDirections;
         /*
         Retrieving the image from Firebase Storage and placing it in the ImageView
          */
-        try{
+        try {
             Uri mPhotoDownloadUri = Uri.parse(mRecipe.getPhotoUrl());
             Picasso.get().load(mPhotoDownloadUri).fit().centerCrop().placeholder(R.drawable.ic_add_a_photo_grey_24dp).into(mImageView);
             mImageView.setVisibility(View.VISIBLE);
-        } catch (Exception e){
+        } catch (Exception e) {
             mImageView.setVisibility(View.GONE);
         }
 
@@ -115,12 +115,12 @@ Share button currently shares a limited text version of the recipe
 TODO: update share functionality to include image and html formatted text.
  */
                 StringBuilder ingredientText = new StringBuilder();
-                for(Ingredient ingredient: mIngredients){
+                for (Ingredient ingredient : mIngredients) {
                     ingredientText.append("\n").append(ingredient.getQuantity()).append(" ").append(ingredient.getMeasurement()).append(" ").append(ingredient.getIngredient());
                 }
                 StringBuilder directionText = new StringBuilder();
                 int positionCounter = 0;
-                for(Direction direction : mDirections){
+                for (Direction direction : mDirections) {
                     positionCounter += 1;
                     directionText.append("\n").append(String.valueOf(positionCounter)).append(". ").append(direction.getDirectionText());
                 }
@@ -132,7 +132,7 @@ TODO: update share functionality to include image and html formatted text.
                         String.format(getString(R.string.directions_share_string), directionText.toString()) + "\n";
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_TEXT,tempText);
+                intent.putExtra(Intent.EXTRA_TEXT, tempText);
                 Intent.createChooser(intent, getString(R.string.share_using));
                 startActivity(intent);
 
@@ -140,9 +140,9 @@ TODO: update share functionality to include image and html formatted text.
         });
 
         mFavoriteButton = findViewById(R.id.detail_favorite_button);
-        if(mRecipe.isFavorite()){
+        if (mRecipe.isFavorite()) {
             mFavoriteButton.setText(R.string.unfavorite);
-        }else{
+        } else {
             mFavoriteButton.setText(R.string.add_favorite);
         }
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
@@ -150,11 +150,11 @@ TODO: update share functionality to include image and html formatted text.
             public void onClick(View v) {
                 boolean isFavorite = mRecipe.isFavorite();
                 String toastText;
-                if(isFavorite){
+                if (isFavorite) {
                     isFavorite = false;
                     toastText = String.format(getString(R.string.recipe_unfavorited), mRecipe.getTitle());
                     mFavoriteButton.setText(R.string.add_favorite);
-                }else{
+                } else {
                     isFavorite = true;
                     toastText = String.format(getString(R.string.recipe_favorited), mRecipe.getTitle());
                     mFavoriteButton.setText(R.string.unfavorite);
@@ -163,7 +163,7 @@ TODO: update share functionality to include image and html formatted text.
                 DatabaseReference rf = db.getReference().child(MainActivity.RF_USERS_PATH + mRecipe.getUserId() + MainActivity.RF_RECIPES_PATH);
                 rf.child(mRecipe.getRecipeId()).child(FAVORITE).setValue(isFavorite);
                 mRecipe.setFavorite(isFavorite);
-                Toast.makeText(getApplicationContext(),toastText,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -171,7 +171,7 @@ TODO: update share functionality to include image and html formatted text.
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetailActivity.this,AddEditActivity.class);
+                Intent intent = new Intent(DetailActivity.this, AddEditActivity.class);
                 intent.putExtra(USER_ID, mRecipe.getUserId());
                 intent.putExtra(TASK_ID, EDIT);
                 intent.putExtra(RECIPE, mRecipe);

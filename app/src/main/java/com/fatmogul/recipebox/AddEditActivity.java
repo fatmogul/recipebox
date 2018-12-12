@@ -106,7 +106,7 @@ allowing to edit existing recipes.
     @mFirebaseDatabase
         Holds the Firebase Database instance.
     @mFirebaseStorage
-        Holds the FIrebase Storage instance.
+        Holds the Firebase Storage instance.
     @mRecipeDatabaseReference
         Holds the mFirebaseDatabase Reference to allow for changes to database.
     @mRecipe
@@ -469,8 +469,8 @@ public class AddEditActivity extends AppCompatActivity {
                     missingData.add(getString(R.string.serves));
                 }
                 if (missingData.size() > 0) {
-                    StringBuilder toastMessage = null;
-                    toastMessage.append((R.string.add_edit_save_error_toast_message));
+                    StringBuilder toastMessage = new StringBuilder();
+                    toastMessage.append(R.string.add_edit_save_error_toast_message);
                     for (Object string : missingData) {
                         toastMessage.append("\n");
                         toastMessage.append(string.toString());
@@ -560,7 +560,7 @@ public class AddEditActivity extends AppCompatActivity {
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Uri selectedImageUri = data.getData();
             assert selectedImageUri != null;
-            final StorageReference photoRef = mRecipePhotoStorageReference.child(selectedImageUri.getLastPathSegment());
+            final StorageReference photoRef = mRecipePhotoStorageReference.child(Objects.requireNonNull(selectedImageUri.getLastPathSegment()));
             try {
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -53,10 +53,10 @@ class DirectionAdapter extends ArrayAdapter<Direction> {
                 AddEditActivity.removeDirection(position);
             }
         });
-        if(convertView.getContext().toString().contains("DetailActivity")){
+        if (convertView.getContext().toString().contains("DetailActivity")) {
             removeButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
-        }else{
+        } else {
 
             if (directionEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
                 directionLabelTextView.setVisibility(View.GONE);

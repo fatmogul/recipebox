@@ -41,18 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
     public final static String USER_ID = "userId";
     public final static String TASK_ID = "taskId";
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mRecipeDatabaseReference;
-    private ChildEventListener mChildEventListener;
-    private RecipeAdapter mAdapter;
-    private ArrayList<String> mKeys;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private String mUserId;
-    private String mSearchTerm;
-    private boolean mSearchQueryChanged = false;
-    private String mFilterSearch;
-    private boolean mFavorites;
     public final static String RECIPE = "recipe";
     public final static String INGREDIENTS = "ingredients";
     public final static String DIRECTIONS = "directions";
@@ -66,6 +54,18 @@ public class MainActivity extends AppCompatActivity {
     private final static String RECIPE_ID = "recipeId";
     private final static String RF_INGREDIENTS_PATH = "/ingredients";
     private final static String RF_DIRECTIONS_PATH = "/directions";
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mRecipeDatabaseReference;
+    private ChildEventListener mChildEventListener;
+    private RecipeAdapter mAdapter;
+    private ArrayList<String> mKeys;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private String mUserId;
+    private String mSearchTerm;
+    private boolean mSearchQueryChanged = false;
+    private String mFilterSearch;
+    private boolean mFavorites;
     private ArrayList<Recipe> mRecipes;
 
     @Override
@@ -283,45 +283,45 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
 
-                            boolean meetSearchCriteria = true;
-                            Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
-                            ArrayList<Ingredient> ingredientTempArray = new ArrayList<>();
-                            DataSnapshot ingredientSnap = dataSnapshot.child(RF_INGREDIENTS_PATH);
-                            Iterable<DataSnapshot> ingredientMatchSnapshot = ingredientSnap.getChildren();
-                            for (DataSnapshot ingredient : ingredientMatchSnapshot) {
-                                ingredientTempArray.add(ingredient.getValue(Ingredient.class));
-                                thisRecipe.setIngredientListBlob(Objects.requireNonNull(thisRecipe).getIngredientListBlob() + Objects.requireNonNull(ingredient.getValue(Ingredient.class)).getIngredient().toLowerCase());
-                            }
-                            Objects.requireNonNull(thisRecipe).setIngredients(ingredientTempArray);
+                    boolean meetSearchCriteria = true;
+                    Recipe thisRecipe = dataSnapshot.getValue(Recipe.class);
+                    ArrayList<Ingredient> ingredientTempArray = new ArrayList<>();
+                    DataSnapshot ingredientSnap = dataSnapshot.child(RF_INGREDIENTS_PATH);
+                    Iterable<DataSnapshot> ingredientMatchSnapshot = ingredientSnap.getChildren();
+                    for (DataSnapshot ingredient : ingredientMatchSnapshot) {
+                        ingredientTempArray.add(ingredient.getValue(Ingredient.class));
+                        thisRecipe.setIngredientListBlob(Objects.requireNonNull(thisRecipe).getIngredientListBlob() + Objects.requireNonNull(ingredient.getValue(Ingredient.class)).getIngredient().toLowerCase());
+                    }
+                    Objects.requireNonNull(thisRecipe).setIngredients(ingredientTempArray);
 
-                            ArrayList<Direction> directionTempArray = new ArrayList<>();
-                            DataSnapshot directionSnap = dataSnapshot.child(RF_DIRECTIONS_PATH);
-                            Iterable<DataSnapshot> directionMatchSnapshot = directionSnap.getChildren();
-                            for (DataSnapshot direction : directionMatchSnapshot) {
-                                directionTempArray.add(direction.getValue(Direction.class));
-                            }
-                            thisRecipe.setDirections(directionTempArray);
+                    ArrayList<Direction> directionTempArray = new ArrayList<>();
+                    DataSnapshot directionSnap = dataSnapshot.child(RF_DIRECTIONS_PATH);
+                    Iterable<DataSnapshot> directionMatchSnapshot = directionSnap.getChildren();
+                    for (DataSnapshot direction : directionMatchSnapshot) {
+                        directionTempArray.add(direction.getValue(Direction.class));
+                    }
+                    thisRecipe.setDirections(directionTempArray);
 
-                            thisRecipe.setRecipeId(dataSnapshot.getKey());
-                            thisRecipe.setUserId(mUserId);
-                            mRecipeDatabaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child(RECIPE_ID).setValue(dataSnapshot.getKey());
-                            mRecipeDatabaseReference.child(dataSnapshot.getKey()).child(USER_ID).setValue(mUserId);
-                            if (mSearchTerm != null && !thisRecipe.getIngredientListBlob().contains(mSearchTerm.toLowerCase())) {
-                                meetSearchCriteria = false;
-                            }
-                            if (mFilterSearch != null && !mFilterSearch.equals(getString(R.string.all_foods)) && !thisRecipe.getIngredientListBlob().contains(mFilterSearch.toLowerCase())) {
-                                meetSearchCriteria = false;
-                            }
-                            if (mFavorites && !thisRecipe.isFavorite()) {
-                                meetSearchCriteria = false;
-                            }
-                            if (meetSearchCriteria) {
-                                mKeys.add(thisRecipe.getRecipeId());
-                                mRecipes.add(thisRecipe);
-                            }
+                    thisRecipe.setRecipeId(dataSnapshot.getKey());
+                    thisRecipe.setUserId(mUserId);
+                    mRecipeDatabaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child(RECIPE_ID).setValue(dataSnapshot.getKey());
+                    mRecipeDatabaseReference.child(dataSnapshot.getKey()).child(USER_ID).setValue(mUserId);
+                    if (mSearchTerm != null && !thisRecipe.getIngredientListBlob().contains(mSearchTerm.toLowerCase())) {
+                        meetSearchCriteria = false;
+                    }
+                    if (mFilterSearch != null && !mFilterSearch.equals(getString(R.string.all_foods)) && !thisRecipe.getIngredientListBlob().contains(mFilterSearch.toLowerCase())) {
+                        meetSearchCriteria = false;
+                    }
+                    if (mFavorites && !thisRecipe.isFavorite()) {
+                        meetSearchCriteria = false;
+                    }
+                    if (meetSearchCriteria) {
+                        mKeys.add(thisRecipe.getRecipeId());
+                        mRecipes.add(thisRecipe);
+                    }
 
 
-                            mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
 
                 }
 
@@ -332,8 +332,8 @@ public class MainActivity extends AppCompatActivity {
                     int index = mKeys.indexOf(dataSnapshot.getKey());
                     mRecipes.remove(mRecipes.get(index));
                     mKeys.remove(index);
-                    mRecipes.add(index,dataSnapshot.getValue(Recipe.class));
-                    mKeys.add(index,dataSnapshot.getKey());
+                    mRecipes.add(index, dataSnapshot.getValue(Recipe.class));
+                    mKeys.add(index, dataSnapshot.getKey());
                     mAdapter.notifyDataSetChanged();
                 }
 

@@ -20,15 +20,15 @@ import java.util.Objects;
 
 class RecipeWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-private final Context mContext;
-private final int appWidgetId;
-private ArrayList<Recipe> mRecipes;
+    private final Context mContext;
+    private final int appWidgetId;
+    private ArrayList<Recipe> mRecipes;
 
 
-    public RecipeWidgetRemoteViewsFactory(Context context, Intent intent) {
-    this.mContext=context;
-    appWidgetId=intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID);
+    RecipeWidgetRemoteViewsFactory(Context context, Intent intent) {
+        this.mContext = context;
+        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
 
 
     }
@@ -47,8 +47,9 @@ private ArrayList<Recipe> mRecipes;
                     Recipe thisRecipe = snapshot.getValue(Recipe.class);
                     mRecipes.add(thisRecipe);
                 }
-                AppWidgetManager.getInstance(mContext).notifyAppWidgetViewDataChanged(appWidgetId,R.id.recipeWidgetListView);
+                AppWidgetManager.getInstance(mContext).notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipeWidgetListView);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -64,49 +65,49 @@ private ArrayList<Recipe> mRecipes;
 
     @Override
     public int getCount() {
-        if(mRecipes != null){
-        Log.d(String.valueOf(mRecipes.size()), "getCount: ");
-        return(mRecipes.size());}
-        else{
+        if (mRecipes != null) {
+            Log.d(String.valueOf(mRecipes.size()), "getCount: ");
+            return (mRecipes.size());
+        } else {
             return 0;
         }
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews row=new RemoteViews(mContext.getPackageName(),
+        RemoteViews row = new RemoteViews(mContext.getPackageName(),
                 R.layout.recipe_widget);
 
         row.setTextViewText(R.id.widget_recipe_name_text_view, mRecipes.get(position).getTitle());
 
-        Intent intent=new Intent();
+        Intent intent = new Intent();
         intent.putExtra("recipe", mRecipes.get(position));
-        intent.putParcelableArrayListExtra("ingredients",mRecipes.get(position).getIngredients());
-        intent.putParcelableArrayListExtra("directions",mRecipes.get(position).getDirections());
+        intent.putParcelableArrayListExtra("ingredients", mRecipes.get(position).getIngredients());
+        intent.putParcelableArrayListExtra("directions", mRecipes.get(position).getDirections());
 
         row.setOnClickFillInIntent(R.id.widget_recipe_name_text_view, intent);
 
-        return(row);
+        return (row);
     }
 
     @Override
     public RemoteViews getLoadingView() {
-        return(null);
+        return (null);
     }
 
     @Override
     public int getViewTypeCount() {
-        return(1);
+        return (1);
     }
 
     @Override
     public long getItemId(int position) {
-        return(position);
+        return (position);
     }
 
     @Override
     public boolean hasStableIds() {
-        return(true);
+        return (true);
     }
 
     @Override

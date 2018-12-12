@@ -43,4 +43,5 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
 
         super.onUpdate(ctxt, appWidgetManager, appWidgetIds);
-    }}
+    }
+}

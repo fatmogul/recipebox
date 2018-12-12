@@ -57,10 +57,10 @@ class IngredientAdapter extends ArrayAdapter<Ingredient> {
                 AddEditActivity.removeIngredient(position);
             }
         });
-        if(convertView.getContext().toString().contains("DetailActivity")){
+        if (convertView.getContext().toString().contains("DetailActivity")) {
             removeButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
-        }else{
+        } else {
             if (ingredientEditText.getText().toString().equals(getContext().getResources().getString(R.string.none_loaded))) {
                 removeButton.setVisibility(View.GONE);
                 quantityEditText.setVisibility(View.GONE);
